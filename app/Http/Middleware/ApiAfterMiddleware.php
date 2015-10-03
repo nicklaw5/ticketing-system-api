@@ -19,7 +19,8 @@ class ApiAfterMiddleware
 
         // Perform after action here
 
-        echo ' after ';
+        // calculate request execution time
+        // echo number_format((microtime(true) - ($request->session()->pull('start', 'default'))), 2);
 
         return $response;
     }

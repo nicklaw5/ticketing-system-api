@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use Route;
+
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class UsersController extends Controller
-{
+class UsersController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company)
-    {
-        return $company;
+    public function index()
+    {   
+        $organization = Route::getCurrentRoute()->getParameter('organization');
+        return $organization;
     }
 
     /**

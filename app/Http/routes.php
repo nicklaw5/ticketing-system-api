@@ -11,9 +11,9 @@
 |
 */
 
-Route::group(['domain' => '{company}.stryve.io'], function()
+Route::group(['domain' => '{organization}.stryve.io'], function()
 {
-	Route::group(['prefix' => 'api/v1', 'middleware' => ['api.before', 'api.after' ] ], function($company)
+	Route::group(['prefix' => 'api/v1', 'middleware' => ['api.before', 'api.after' ] ], function()
 	{	
 		// Route::resource('auth', 'AuthController');
 		Route::resource('users', 'UsersController');
