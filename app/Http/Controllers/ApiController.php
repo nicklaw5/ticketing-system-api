@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Config;
 
-class ApiController extends Controller {
+class ApiResponses {
 
     // HTTP Response Codes
     const HTTP_OK = 200;

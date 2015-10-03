@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Route;
-
+use App\Stryve\ApiResponses;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -15,10 +15,11 @@ class UsersController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ApiResponses $api)
     {   
-        $organization = Route::getCurrentRoute()->getParameter('organization');
-        return $organization;
+        return $api->respondOk();
+        // $organization = Route::getCurrentRoute()->getParameter('organization');
+        // return $organization;
     }
 
     /**
