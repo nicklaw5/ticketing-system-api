@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['domain' => '{organization}.stryve.io', 'middleware' => 'auth'], function()
+Route::group(['domain' => '{organization}.stryve.io'/*, 'middleware' => 'auth'*/], function()
 {
 	/***************/
 	/* INDEX ROUTE */
@@ -26,7 +26,7 @@ Route::group(['domain' => '{organization}.stryve.io', 'middleware' => 'auth'], f
 	/***************/
 	/* AUTH ROUTES */
 	/***************/
-	// Route::get('auth/login', 'AuthController@glogin');
+	Route::get('auth/login', 'AuthController@getlogin');
 	// Route::get('auth/logout', 'AuthController@logout');
 	// Route::get('auth/forgot-password', 'AuthController@forgotPassword');
 

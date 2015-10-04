@@ -25,7 +25,7 @@ class AuthController extends Controller
      * 
      * @return  response
      */
-    public function login()
+    public function getlogin()
     {
     	return view('public.auth.login', [
     		'title' => 'Login'
@@ -37,7 +37,7 @@ class AuthController extends Controller
      *
      * @return  response
      */
-    public function login(LoginRequest $request)
+    public function postlogin(LoginRequest $request)
     {
         $remember = ($request->has('remember_me'))? true: false;
         $credentials = [
@@ -81,7 +81,7 @@ class AuthController extends Controller
      * 
      * @return  response
      */
-    public function forgotPassword()
+    public function getForgotPassword()
     {
     	return view('public.forgot-password', ['title' => 'Forgot Password']);
     }
@@ -91,7 +91,7 @@ class AuthController extends Controller
      * 
      * @return  response
      */
-    public function forgotPassword()
+    public function postForgotPassword()
     {
     	// handle forgot password request
     }
