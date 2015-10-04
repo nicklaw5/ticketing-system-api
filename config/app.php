@@ -145,6 +145,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // OAuth2Server
+        LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
+        LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
+
+        //HTML & FORM PROVIDERS
+        Illuminate\Html\HtmlServiceProvider::class,
+
     ],
 
     /*
@@ -193,6 +200,13 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+
+        // OAuth2Server
+        'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
+
+        //HTML & FORM FACADES
+        'Form'      => Illuminate\Html\FormFacade::class,
+        'Html'      => Illuminate\Html\HtmlFacade::class,
 
     ],
 

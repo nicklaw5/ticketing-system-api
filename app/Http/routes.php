@@ -11,13 +11,48 @@
 |
 */
 
-Route::group(['domain' => '{organization}.stryve.io'], function()
+Route::group(['domain' => '{organization}.stryve.io', 'middleware' => 'auth'], function()
 {
-	Route::group(['prefix' => 'api/v1', 'middleware' => ['api.before', 'api.after' ] ], function()
-	{	
-		// Route::resource('auth', 'AuthController');
-		Route::resource('users', 'UsersController');
-		// Route::resource('tickets', 'TicketsController');
-		// Route::resournce('subscriptions', 'SubscriptionsController');
+	/***************/
+	/* INDEX ROUTE */
+	/***************/
+	Route::get('/', 'AuthController@index');
+
+	/********************/
+	/* DASHBOARD ROUTES */
+	/********************/
+	Route::get('/dashboard', 'DashboardController@index');
+
+	/***************/
+	/* AUTH ROUTES */
+	/***************/
+	// Route::get('auth/login', 'AuthController@glogin');
+	// Route::get('auth/logout', 'AuthController@logout');
+	// Route::get('auth/forgot-password', 'AuthController@forgotPassword');
+
+	/****************/
+	/* OTHER ROUTES */
+	/****************/
+	// Route::resource('users', 'UsersController');
+	// Route::resource('tickets', 'TicketsController');
+	// Route::resournce('subscriptions', 'SubscriptionsController');
+
+	// /api/...
+	Route::group(['prefix' => 'api'], function()
+	{
+		// /api/oauth/...
+		Route::get('oauth/authorize', ['middleware' => ['check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@getAuthorize']);
+		Route::post('oauth/authorize', ['middleware' => ['csrf', 'check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@postAuthorize']);
+		Route::post('oauth/access_token', 'OauthController@postAccessToken');
+		
+		// /api/v1/...
+		Route::group(['prefix' => 'v1', 'middleware' => ['api.before', 'api.after' ] ], function()
+		{	
+			// Route::resource('users', 'UsersController');
+			// Route::resource('tickets', 'TicketsController');
+			// Route::resournce('subscriptions', 'SubscriptionsController');
+		});
+
 	});
+
 });

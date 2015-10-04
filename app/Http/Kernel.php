@@ -17,7 +17,10 @@ class Kernel extends HttpKernel
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \App\Http\Middleware\VerifyCsrfToken::class,
+        // \App\Http\Middleware\VerifyCsrfToken::class,
+
+        // Oauth2Server
+        \LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware::class
     ];
 
     /**
@@ -26,10 +29,20 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        //  Default Middleware
         'auth'          =>  \App\Http\Middleware\Authenticate::class,
         'auth.basic'    =>  \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest'         =>  \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'csrf'              =>  \App\Http\Middleware\VerifyCsrfToken::class,
+        
+        // Custom Middleware
         'api.before'    =>  \App\Http\Middleware\ApiBeforeMiddleware::class,
         'api.after'     =>  \App\Http\Middleware\ApiAfterMiddleware::class,
+
+        // Oauth2Server Middleware
+        'oauth'                         => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,
+        'oauth-user'                    => \LucaDegasperi\OAuth2Server\Middleware\OAuthUserOwnerMiddleware::class,
+        'oauth-client'                  => \LucaDegasperi\OAuth2Server\Middleware\OAuthClientOwnerMiddleware::class,
+        'check-authorization-params'    => \LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware::class
     ];
 }
