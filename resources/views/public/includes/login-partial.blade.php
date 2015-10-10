@@ -38,8 +38,7 @@
 		<div class="form-group">
 			<button type="submit" class="btn bg-blue btn-block">Login <i class="icon-circle-right2 position-right"></i></button>
 		</div>
-
-		
+				
 		<span class="help-block text-center no-margin">By continuing, you're confirming that you've read our <a href="#">Terms &amp; Conditions</a> and <a href="#">Cookie Policy</a></span>
 	</div>
 </form>

@@ -1,16 +1,27 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
+// Global API - access restriction are based on the passed token (and associated scopes) in the header
+Route::group(['domain' => 'api.stryve.io'/*, 'middleware' => 'auth'*/], function()
+{
+	Route::get('oauth/authorize', ['middleware' => ['check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@getAuthorize']);
+	Route::post('oauth/authorize', ['middleware' => ['csrf', 'check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@postAuthorize']);
+	Route::post('oauth/access_token', 'OauthController@postAccessToken');
 
+	Route::group(['prefix' => 'v1', 'middleware' => ['api.before', 'api.after' ] ], function()
+	{
+		// public end-points
+		Route::resource('users', 'UsersController');
+		Route::resource('profile', 'ProfileController');
+		Route::resource('tickets', 'TicketsController');
+		Route::resource('ticket-attachments', 'TicketAttachmentsController');
+		Route::resournce('subscriptions', 'SubscriptionsController');
+
+		// private end-points
+		Route::resource('users')
+	});
+});
+
+// Backend API for Organization Administration
 Route::group(['domain' => '{organization}.stryve.io'/*, 'middleware' => 'auth'*/], function()
 {
 	/***************/
