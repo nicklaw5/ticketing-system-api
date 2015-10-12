@@ -2,7 +2,6 @@
 
 namespace App\Stryve;
 
-use Config;
 
 class ApiResponses {
 
