@@ -31,11 +31,12 @@ Route::group(['domain' => 'api.stryve.io'], function()
 		Route::get('/', function()
 		{
 			// echo \LucaDegasperi\OAuth2Server\Facades\Authorizer::getResourceOwnerId();
-			echo "made it";
+			
+			dd(\Uuid::generate()->string);
 		});
 
 		Route::resource('staff', 'StaffController');
-		Route::resource('register', 'RegistrationController');
+		Route::resource('tenants', 'TenantsController');
 		Route::resource('organizations', 'OrganizationsController');
 	});
 

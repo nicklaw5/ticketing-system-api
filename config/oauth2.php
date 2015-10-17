@@ -31,7 +31,7 @@ return [
     'grant_types' => [
         'client_credentials' => [
             'class' => '\League\OAuth2\Server\Grant\ClientCredentialsGrant',
-            'access_token_ttl' => 3600
+            'access_token_ttl' => 86400 // 24 hrs
         ],
         'authorization_code' => [
             'class' => '\League\OAuth2\Server\Grant\AuthCodeGrant',

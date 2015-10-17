@@ -24,7 +24,7 @@ class TenantsController extends Controller
     {
         $this->tenant = $tenant;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -76,6 +76,17 @@ class TenantsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
+    {
+        //
+    }
+
+    /**
+     * Tests if tenants is active
+     * 
+     * @param string $string
+     * @return bool
+     */
+    public function tenantExists($string)
     {
         //
     }
