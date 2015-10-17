@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Oauth;
 
 use Authorizer;
-
-use Illuminate\Http\Request;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class OauthController extends Controller
@@ -59,21 +58,44 @@ class OauthController extends Controller
 	    return redirect($redirectUri);
 	}
 
+	// /**
+	//  * Respond to the access token requests.
+	//  *
+	//  * @return json
+	//  */
+	// public function postAccessToken()
+	// {
+
+	// 	// curl url 		=> http://company.stryve.io:8000/api/oauth/access_token
+	// 	// grant_type 		=> authorization_code
+	// 	// client_id 		=> test
+	// 	// client_secret 	=> test
+	// 	// redirect_uri		=> http://company.stryve.io:8000/api/v1/users
+	// 	// code 			=> uhLG7rQOHCxliJ4ayKlVuqdVW1mU70MxB31JEKV0
+
+	// 	return response()->json(Authorizer::issueAccessToken());
+	// }
+
 	/**
 	 * Respond to the access token requests.
 	 *
+	 * @return json
 	 */
 	public function postAccessToken()
 	{
-
-		// curl url => http://company.stryve.io:8000/api/oauth/access_token
-		// grant_type 		=> authorization_code
-		// client_id 		=> test
-		// client_secret 	=> test
-		// redirect_uri		=> http://company.stryve.io:8000/api/v1/users
-		// code 			=> uhLG7rQOHCxliJ4ayKlVuqdVW1mU70MxB31JEKV0
-
+		/* REQUEST */
+		// cURL/POST url 	=> http://api.stryve.io:8000/oauth/access_token
+		// grant_type 		=> client_credentials
+		// client_id 		=> 1
+		// client_secret 	=> test_secret_1
 		return response()->json(Authorizer::issueAccessToken());
+
+		/* JSON REQUEST */
+		// {
+		// 	"access_token": "SEwGZDGeBKqNVmVeaYaeX7wMea6EhH913UnYCLee",
+		//   	"token_type": "Bearer",
+		//   	"expires_in": 3600
+		// }
 	}
 }
 

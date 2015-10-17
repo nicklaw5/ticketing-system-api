@@ -27,21 +27,21 @@ class CreateOauthClientGrantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_client_grants', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('client_id', 40);
-            $table->string('grant_id', 40);
-            $table->timestamps();
+        Schema::create('oauth_client_grants', function (Blueprint $t) {
+            $t->increments('id');
+            $t->string('client_id', 40);
+            $t->string('grant_id', 40);
+            $t->timestamps();
 
-            $table->index('client_id');
-            $table->index('grant_id');
+            $t->index('client_id');
+            $t->index('grant_id');
 
-            $table->foreign('client_id')
+            $t->foreign('client_id')
                   ->references('id')->on('oauth_clients')
                   ->onDelete('cascade')
                   ->onUpdate('no action');
 
-            $table->foreign('grant_id')
+            $t->foreign('grant_id')
                   ->references('id')->on('oauth_grants')
                   ->onDelete('cascade')
                   ->onUpdate('no action');
@@ -55,9 +55,9 @@ class CreateOauthClientGrantsTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_client_grants', function (Blueprint $table) {
-            $table->dropForeign('oauth_client_grants_client_id_foreign');
-            $table->dropForeign('oauth_client_grants_grant_id_foreign');
+        Schema::table('oauth_client_grants', function (Blueprint $t) {
+            $t->dropForeign('oauth_client_grants_client_id_foreign');
+            $t->dropForeign('oauth_client_grants_grant_id_foreign');
         });
         Schema::drop('oauth_client_grants');
     }

@@ -27,21 +27,21 @@ class CreateOauthSessionScopesTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_session_scopes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('session_id')->unsigned();
-            $table->string('scope_id', 40);
+        Schema::create('oauth_session_scopes', function (Blueprint $t) {
+            $t->increments('id');
+            $t->integer('session_id')->unsigned();
+            $t->string('scope_id', 40);
 
-            $table->timestamps();
+            $t->timestamps();
 
-            $table->index('session_id');
-            $table->index('scope_id');
+            $t->index('session_id');
+            $t->index('scope_id');
 
-            $table->foreign('session_id')
+            $t->foreign('session_id')
                   ->references('id')->on('oauth_sessions')
                   ->onDelete('cascade');
 
-            $table->foreign('scope_id')
+            $t->foreign('scope_id')
                   ->references('id')->on('oauth_scopes')
                   ->onDelete('cascade');
         });
@@ -54,9 +54,9 @@ class CreateOauthSessionScopesTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_session_scopes', function (Blueprint $table) {
-            $table->dropForeign('oauth_session_scopes_session_id_foreign');
-            $table->dropForeign('oauth_session_scopes_scope_id_foreign');
+        Schema::table('oauth_session_scopes', function (Blueprint $t) {
+            $t->dropForeign('oauth_session_scopes_session_id_foreign');
+            $t->dropForeign('oauth_session_scopes_scope_id_foreign');
         });
         Schema::drop('oauth_session_scopes');
     }

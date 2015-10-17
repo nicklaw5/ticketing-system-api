@@ -27,17 +27,17 @@ class CreateOauthSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_sessions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('client_id', 40);
-            $table->enum('owner_type', ['client', 'user'])->default('user');
-            $table->string('owner_id');
-            $table->string('client_redirect_uri')->nullable();
-            $table->timestamps();
+        Schema::create('oauth_sessions', function (Blueprint $t) {
+            $t->increments('id');
+            $t->string('client_id', 40);
+            $t->enum('owner_type', ['client', 'user'])->default('user');
+            $t->string('owner_id');
+            $t->string('client_redirect_uri')->nullable();
+            $t->timestamps();
 
-            $table->index(['client_id', 'owner_type', 'owner_id']);
+            $t->index(['client_id', 'owner_type', 'owner_id']);
 
-            $table->foreign('client_id')
+            $t->foreign('client_id')
                 ->references('id')->on('oauth_clients')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
@@ -51,8 +51,8 @@ class CreateOauthSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_sessions', function (Blueprint $table) {
-            $table->dropForeign('oauth_sessions_client_id_foreign');
+        Schema::table('oauth_sessions', function (Blueprint $t) {
+            $t->dropForeign('oauth_sessions_client_id_foreign');
         });
         Schema::drop('oauth_sessions');
     }

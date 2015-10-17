@@ -33,11 +33,12 @@ class Kernel extends HttpKernel
         'auth'          =>  \App\Http\Middleware\Authenticate::class,
         'auth.basic'    =>  \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest'         =>  \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'csrf'              =>  \App\Http\Middleware\VerifyCsrfToken::class,
+        'csrf'          =>  \App\Http\Middleware\VerifyCsrfToken::class,
         
         // Custom Middleware
-        'api.before'    =>  \App\Http\Middleware\ApiBeforeMiddleware::class,
-        'api.after'     =>  \App\Http\Middleware\ApiAfterMiddleware::class,
+        'api.before'    =>  \App\Stryve\Middleware\ApiBeforeMiddleware::class,
+        'api.after'     =>  \App\Stryve\Middleware\ApiAfterMiddleware::class,
+        'tenant'        =>  \App\Stryve\Middleware\TenantMiddleware::class,
 
         // Oauth2Server Middleware
         'oauth'                         => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,

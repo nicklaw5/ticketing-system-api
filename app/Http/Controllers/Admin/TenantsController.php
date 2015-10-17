@@ -1,33 +1,36 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use Route;
-use App\Stryve\ApiResponses;
-use Illuminate\Http\Request;
+use App\Tenant;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class UsersController extends Controller {
+class TenantsController extends Controller
+{
+    /**
+     * @var \App\Tenant
+     */
+    protected $tenant;
 
+    /**
+     * Instantiate a new instance
+     * 
+     * @param \App\Tenant
+     * @return void
+     */
+    public function __construct(Tenant $tenant)
+    {
+        $this->tenant = $tenant;
+    }
+    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApiResponses $api)
-    {   
-        return $api->respondOk();
-        // $organization = Route::getCurrentRoute()->getParameter('organization');
-        // return $organization;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function index()
     {
         //
     }
@@ -50,17 +53,6 @@ class UsersController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

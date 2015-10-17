@@ -27,17 +27,17 @@ class CreateOauthAuthCodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_auth_codes', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->integer('session_id')->unsigned();
-            $table->string('redirect_uri');
-            $table->integer('expire_time');
+        Schema::create('oauth_auth_codes', function (Blueprint $t) {
+            $t->string('id', 40)->primary();
+            $t->integer('session_id')->unsigned();
+            $t->string('redirect_uri');
+            $t->integer('expire_time');
 
-            $table->timestamps();
+            $t->timestamps();
 
-            $table->index('session_id');
+            $t->index('session_id');
 
-            $table->foreign('session_id')
+            $t->foreign('session_id')
                   ->references('id')->on('oauth_sessions')
                   ->onDelete('cascade');
         });
@@ -50,8 +50,8 @@ class CreateOauthAuthCodesTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_auth_codes', function (Blueprint $table) {
-            $table->dropForeign('oauth_auth_codes_session_id_foreign');
+        Schema::table('oauth_auth_codes', function (Blueprint $t) {
+            $t->dropForeign('oauth_auth_codes_session_id_foreign');
         });
         Schema::drop('oauth_auth_codes');
     }

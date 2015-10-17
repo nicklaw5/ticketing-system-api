@@ -27,14 +27,14 @@ class CreateOauthRefreshTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->string('id', 40)->unique();
-            $table->string('access_token_id', 40)->primary();
-            $table->integer('expire_time');
+        Schema::create('oauth_refresh_tokens', function (Blueprint $t) {
+            $t->string('id', 40)->unique();
+            $t->string('access_token_id', 40)->primary();
+            $t->integer('expire_time');
 
-            $table->timestamps();
+            $t->timestamps();
 
-            $table->foreign('access_token_id')
+            $t->foreign('access_token_id')
                   ->references('id')->on('oauth_access_tokens')
                   ->onDelete('cascade');
         });
@@ -47,8 +47,8 @@ class CreateOauthRefreshTokensTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->dropForeign('oauth_refresh_tokens_access_token_id_foreign');
+        Schema::table('oauth_refresh_tokens', function (Blueprint $t) {
+            $t->dropForeign('oauth_refresh_tokens_access_token_id_foreign');
         });
 
         Schema::drop('oauth_refresh_tokens');
