@@ -149,8 +149,11 @@ return [
         LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
         LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
 
-        //HTML & FORM PROVIDERS
+        // HTML & FORM PROVIDERS
         Illuminate\Html\HtmlServiceProvider::class,
+
+        // LARAVEL CASHIER
+        Laravel\Cashier\CashierServiceProvider::class,
 
 
     ],

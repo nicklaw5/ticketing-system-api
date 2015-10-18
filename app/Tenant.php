@@ -4,8 +4,19 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tenant extends Model
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Contracts\Billable as BillableContract;
+
+
+class Tenant extends Model implements BillableContract
 {
+    use Billable;
+
+    /**
+     * @var $date
+     */
+    protected $dates = ['trial_ends_at', 'subscription_ends_at'];
+
     /**
      * The database table used by the model.
      *
