@@ -32,7 +32,7 @@ class TenantsController extends Controller
      */
     public function index()
     {
-        //
+        echo 'holla';
     }
 
     /**
@@ -43,7 +43,7 @@ class TenantsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**

@@ -11,12 +11,7 @@ use Laravel\Cashier\Contracts\Billable as BillableContract;
 class Tenant extends Model implements BillableContract
 {
     use Billable;
-
-    /**
-     * @var $date
-     */
-    protected $dates = ['trial_ends_at', 'subscription_ends_at'];
-
+    
     /**
      * The database table used by the model.
      *
@@ -37,4 +32,11 @@ class Tenant extends Model implements BillableContract
      * @var array
      */
     protected $hidden = [];
+
+    /**
+     * 
+     * Laravel Cashier fields
+     * @var array
+     */
+    protected $dates = ['trial_ends_at', 'subscription_ends_at'];
 }
