@@ -1,6 +1,5 @@
 <?php
 
-// use DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -17,7 +16,8 @@ class CreateTenantsTable extends Migration
         {
             $t->increments('id');
             // $t->binary('tenant_uuid', 16)->unique();
-            $t->string('subdomain', 40)->unique();
+            $t->string('subdomain', 40)->unique();  // use this for db_name also
+            $t->string('db_connection', 20);
 
             // LARAVE\CASHIER COLUMNS
             $t->tinyInteger('stripe_active')->default(0);
@@ -32,8 +32,10 @@ class CreateTenantsTable extends Migration
             $t->softDeletes();
         });
 
+        $db_prefix = Config::get('database.connections.'.env('DB_CONNECTION_0', 'dev_').'.prefix');
+
         // add tenant_uuid column as 16 digit binary
-        \DB::statement('ALTER TABLE `dev_tenants` ADD `tenant_uuid` BINARY(16) NOT NULL UNIQUE AFTER `id`');
+        DB::statement("ALTER TABLE `".$db_prefix."tenants` ADD `tenant_uuid` BINARY(16) NOT NULL UNIQUE AFTER `id`");
     }
 
     /**

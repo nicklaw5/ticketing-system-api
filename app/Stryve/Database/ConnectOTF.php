@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Stryve;
+namespace Stryve\Database;
 
 use DB;
 use Config;
@@ -180,6 +180,21 @@ class ConnectOTF {
 	public function getTable($table = null)
 	{
 		return $this->getConnection()->table($table);
+	}
+
+
+	// from -> http://laravel.io/forum/09-13-2014-create-new-database-and-tables-on-the-fly
+	/**
+	 * Creates a new database schema.
+	 *
+	 * @param  string $schemaName The new schema name.
+	 * @return bool
+	 */
+	function createSchema($schemaName)
+	{
+	    // We will use the `statement` method from the connection class so that
+	    // we have access to parameter binding.
+	    return DB::getConnection()->statement('CREATE DATABASE :schema', array('schema' => $schemaName));
 	}
 
 }

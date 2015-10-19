@@ -17,7 +17,6 @@ class Kernel extends HttpKernel
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        // \App\Http\Middleware\VerifyCsrfToken::class,
 
         // Oauth2Server
         \LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware::class
@@ -35,10 +34,10 @@ class Kernel extends HttpKernel
         'guest'         =>  \App\Http\Middleware\RedirectIfAuthenticated::class,
         'csrf'          =>  \App\Http\Middleware\VerifyCsrfToken::class,
         
-        // Custom Middleware
-        'api.before'    =>  \App\Stryve\Middleware\ApiBeforeMiddleware::class,
-        'api.after'     =>  \App\Stryve\Middleware\ApiAfterMiddleware::class,
-        'tenant'        =>  \App\Stryve\Middleware\TenantMiddleware::class,
+        // Stryve Middleware
+        'api.before'    =>  \Stryve\Middleware\ApiBeforeMiddleware::class,
+        'api.after'     =>  \Stryve\Middleware\ApiAfterMiddleware::class,
+        'tenant'        =>  \Stryve\Middleware\TenantMiddleware::class,
 
         // Oauth2Server Middleware
         'oauth'                         => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,
