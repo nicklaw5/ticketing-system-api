@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Laravel\Cashier\Billable;
 use Laravel\Cashier\Contracts\Billable as BillableContract;
@@ -10,7 +11,7 @@ use Laravel\Cashier\Contracts\Billable as BillableContract;
 
 class Tenant extends Model implements BillableContract
 {
-    use Billable;
+    use SoftDeletes, Billable;
     
     /**
      * The database table used by the model.
@@ -34,9 +35,9 @@ class Tenant extends Model implements BillableContract
     protected $hidden = [];
 
     /**
-     * 
-     * Laravel Cashier fields
+     * The attributes that should be mutated to dates.
+     *
      * @var array
      */
-    protected $dates = ['trial_ends_at', 'subscription_ends_at'];
+    protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 }
