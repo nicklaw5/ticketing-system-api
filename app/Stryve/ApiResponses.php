@@ -2,8 +2,9 @@
 
 namespace Stryve;
 
+use Symfony\Component\HttpFoundation\Response;
 
-class ApiResponses {
+class ApiResponses /*extends Response*/ {
 
     // HTTP Response Codes
     const HTTP_OK = 200;

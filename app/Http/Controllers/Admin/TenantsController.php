@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Stryve\Requests\NewTenantRequest;
 
+use Stryve\Exceptions\MyCustomException;
+
 class TenantsController extends Controller
 {
     /**
@@ -44,6 +46,13 @@ class TenantsController extends Controller
      */
     public function store(NewTenantRequest $request)
     {
+        
+        throw new MyCustomException();
+
+        // dd($test->getMessage());
+        
+
+
         dd($request->all());
         /** Request Attributes **/
         // array:6 [

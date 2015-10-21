@@ -27,13 +27,13 @@ class ReservedSubdomainsSeeder extends Seeder
      */
     public function run()
     {
-    	$json = file_get_contents(stryve_path().'/Database/SeedData/reserved_subdomains.json');
-        $subdomains = json_decode($json);
+    	$subdomains = json_decode(file_get_contents(stryve_path().'/Database/SeedData/reserved_subdomains.json'));
 
-		foreach ($subdomain as $value) {
+		foreach ($subdomains as $value) {
 	        $this->subdomain->createOrUpdate([
 	        		'subdomain' => $value
 	        	]
 	        );
+	    }
     }
 }

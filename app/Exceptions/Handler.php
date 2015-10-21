@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use Stryve\Exceptions\MyCustomException;
+
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -45,6 +47,10 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
+
+        // if ($e instanceof MyCustomException) {
+        //     return response($e->getHttpStatusCode());
+        // }
 
         return parent::render($request, $e);
     }

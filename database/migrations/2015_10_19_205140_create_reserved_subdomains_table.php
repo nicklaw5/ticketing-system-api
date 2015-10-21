@@ -15,7 +15,7 @@ class CreateReservedSubdomainsTable extends Migration
         Schema::create('reserved_subdomains', function(Blueprint $t)
         {
             $t->increments('id');
-            $t->string('subdomain', 40);
+            $t->string('subdomain', 40)->uniqe();            
             
             $t->integer('created_by');
             $t->timestamp('created_at');
