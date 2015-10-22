@@ -14,8 +14,11 @@ class MyCustomException extends StryveException
     /**
      * {@inheritdoc}
      */
-    public $httpStatus = 'custom_status';
+    public $httpStatusText = 'custom_status';
 
+    /**
+     * {@inheritdoc}
+     */
     public function __construct($msg = 'my custom message')
     {
         parent::__construct($msg);

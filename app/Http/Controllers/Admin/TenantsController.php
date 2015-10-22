@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Stryve\Requests\NewTenantRequest;
 
-use Stryve\Exceptions\MyCustomException;
+use Stryve\Exceptions\HttpBadRequestExeption;
 
 class TenantsController extends Controller
 {
@@ -46,8 +46,10 @@ class TenantsController extends Controller
      */
     public function store(NewTenantRequest $request)
     {
+        // $api = new \Stryve\Response\ApiResponses;
+        // return $api->respondBadRequest();
         
-        throw new MyCustomException();
+        throw new HttpBadRequestExeption();
 
         // dd($test->getMessage());
         
