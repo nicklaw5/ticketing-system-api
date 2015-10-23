@@ -68,9 +68,10 @@ class ApiResponses {
     const HTTP_NOT_EXTENDED = 510;                                                // RFC2774
     const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
 
-    const UNKNOWN_ERROR = 'An unknown error occured';
+    // OTHER CONSTANTS
     const ERROR_TEXT = 'error';
     const SUCCESS_TEXT = 'succes';
+    const UNKNOWN_ERROR = 'An unknown error occured';
 
     /**
      * Status codes translation table.
@@ -235,10 +236,12 @@ class ApiResponses {
      */
     public function setStatusMessage($msg)
     {	
-    	if($msg == '')
+        $msg = trim((string) $msg);
+
+    	if($msg === '')
     		$this->statusMessage = $this->getStatusMessage();
     	else
-    		$this->statusMessage = (string) trim($msg);
+    		$this->statusMessage = $msg;
         
         return $this;
     }
@@ -254,9 +257,10 @@ class ApiResponses {
     }
 
     /**
-     * Set application error code
-     *
-     * @param int $code
+     * Sets error message
+     * 
+     * @param string $msg
+     * @return $this
      */
     public function setErrorMessage($msg)
     {
@@ -267,9 +271,9 @@ class ApiResponses {
     }
 
     /**
-     * Gets the error code
+     * Gets the error message
      * 
-     * @return int
+     * @return string
      */
     public function getErrorMessage()
     {
@@ -280,6 +284,7 @@ class ApiResponses {
      * Set application error code
      *
      * @param int $code
+     * @return $this
      */
     public function setErrorCode($code)
     {
@@ -292,30 +297,22 @@ class ApiResponses {
      * Returns 200 OK Response
      * 
      * @param  array $data
-     * @param  string $msg
-     * @return Response
+     * @return json
      */
     public function respondOk($data = [])
     {
-        return $this->setStatusText(self::$statusTexts[self::HTTP_OK])
-        			->setStatusCode(self::HTTP_OK)
-        			->setStatusMessage(self::SUCCESS_TEXT)
-        			->respondWithSuccessMessage($data);
+        return $this->getSuccessResponse($data, self::HTTP_OK);
     }
 
     /**
      * Returns 201 Created Response
      * 
      * @param  array $data
-     * @param  string $msg
-     * @return Response
+     * @return json
      */
     public function respondCreated($data = [])
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_CREATED])
-        			->setStatusCode(self::HTTP_CREATED)
-        			->setStatusMessage(self::SUCCESS_TEXT)
-                    ->respondWithSuccessMessage($data);
+        return $this->getSuccessResponse($data, self::HTTP_CREATED);
     }
 
     /**
@@ -327,150 +324,139 @@ class ApiResponses {
      */
     public function respondAccepted($data = [])
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_ACCEPTED])
-        			->setStatusCode(self::HTTP_ACCEPTED)
-        			->setStatusMessage(self::SUCCESS_TEXT)
-                    ->respondWithSuccessMessage($data);
+        return $this->getSuccessResponse($data, self::HTTP_ACCEPTED);
     }
 
     /**
      * Returns 400 Bad Request Response
      * 
      * @param  string $msg
-     * @return Response
+     * @param int $errorCode
+     * @return json
      */
     public function respondBadRequest($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_BAD_REQUEST])
-                    ->setStatusCode(self::HTTP_BAD_REQUEST)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_BAD_REQUEST);
     }
 
     /**
      * Returns 401 Unauthorized Response
      * 
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondUnauthorized($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_UNAUTHORIZED])
-                    ->setStatusCode(self::HTTP_UNAUTHORIZED)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_UNAUTHORIZED);
     }
 
     /**
      * Returns 403 Forbidden Response
      * 
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondForbidden($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_FORBIDDEN])
-                    ->setStatusCode(self::HTTP_FORBIDDEN)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_FORBIDDEN);
     }
 
     /**
      * Returns 404 Not Found HTTP Response
      *
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondNotFound($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_NOT_FOUND])
-                    ->setStatusCode(self::HTTP_NOT_FOUND)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_NOT_FOUND);
     }
 
     /**
      * Returns 405 Method Not Allowed Response
      *
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondMethodNotAllowed($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_METHOD_NOT_ALLOWED])
-                    ->setStatusCode(self::HTTP_METHOD_NOT_ALLOWED)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_METHOD_NOT_ALLOWED);        
     }
 
     /**
      * Returns 500 Internal Server HTTP Response
      *
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondInternalError($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_INTERNAL_SERVER_ERROR])
-                    ->setStatusCode(self::HTTP_INTERNAL_SERVER_ERROR)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Returns 501 Not Implemented HTTP Response
      *
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondNotImplemented($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_NOT_IMPLEMENTED])
-                    ->setStatusCode(self::HTTP_NOT_IMPLEMENTED)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_NOT_IMPLEMENTED);
     }
 
     /**
      * Returns 503 Rate Limit Exceeded HTTP Response
      *      
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondRateLimitExceeded($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_SERVICE_UNAVAILABLE])
-                    ->setStatusCode(self::HTTP_SERVICE_UNAVAILABLE)
-                    ->setStatusMessage(self::ERROR_TEXT)
-                    ->setErrorCode($errorCode)
-                    ->setErrorMessage($msg)
-                    ->respondWithErrorMessage();
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
      * Returns 503 Not Available HTTP Response
      *
-     * @param  string $msg
-     * @return Response
+     * @param string $msg
+     * @param int $errorCode
+     * @return json
      */
     public function respondNotAvailable($msg = '', $errorCode = 0)
     {
-        return $this->setStatusText($this->statusTexts[self::HTTP_SERVICE_UNAVAILABLE])
-                    ->setStatusCode(self::HTTP_SERVICE_UNAVAILABLE)
+        return $this->getErrorResponse($msg, $errorCode, self::HTTP_SERVICE_UNAVAILABLE);
+    }
+
+    /**
+     * Sets the success response
+     *
+     * @return json 
+     */
+    protected function getSuccessResponse($data, $statusText)
+    {
+        return $this->setStatusText($this->statusTexts[$statusText])
+                    ->setStatusCode($statusText)
+                    ->setStatusMessage(self::SUCCESS_TEXT)
+                    ->respondWithSuccessMessage($data);
+    }
+
+    /**
+     * Sets the error response
+     *
+     * @return json 
+     */
+    protected function getErrorResponse($msg, $errorCode, $statusText)
+    {
+        return $this->setStatusText($this->statusTexts[$statusText])
+                    ->setStatusCode($statusText)
                     ->setStatusMessage(self::ERROR_TEXT)
                     ->setErrorCode($errorCode)
                     ->setErrorMessage($msg)
@@ -497,7 +483,7 @@ class ApiResponses {
     /**
      * Returns JSON Encoded Response based on the set HTTP Status Code
      * 
-     * @return Response
+     * @return json
      */
     protected function respondWithErrorMessage()
     {
@@ -528,7 +514,7 @@ class ApiResponses {
      * 
      * @param  array $body
      * @param  array $headers
-     * @return JsonReponse
+     * @return json
      */
     protected function respond($body, $headers = [])
     {
