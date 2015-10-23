@@ -3,6 +3,11 @@
 return [
 	
 	/**
+	 * Are we accepting registrations at the moment?
+	 */
+	'accept-registraions' => true,
+
+	/**
 	 * Various default/central configurations for tenants
 	 */
 	'tentant' => [

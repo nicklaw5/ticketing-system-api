@@ -5,8 +5,8 @@ namespace App\Exceptions;
 use Exception;
 
 // STRYVE EXCEPTIONS
-use Stryve\Exceptions\MyCustomException;
-use Stryve\Exceptions\HttpBadRequestExeption;
+use Stryve\Exceptions\Http\HttpNotFoundExeption;
+use Stryve\Exceptions\Http\HttpBadRequestExeption;
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,15 +16,6 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-
-    // protected $api;
-
-    // public function __construct(LoggerInterface $log, ApiResponses $api)
-    // {
-    //     parent::__construct($log);
-    //     $this->api = $api;
-
-    // }
 
     /**
      * A list of the exception types that should not be reported.
@@ -58,11 +49,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        // LARAVEL EXCEPTIONS
         if ($e instanceof ModelNotFoundException)
             $e = new NotFoundHttpException($e->getMessage(), $e);
 
-        if ($e instanceof HttpBadRequestExeption)
-            return $this->api->respondBadRequest();
+        // STRYVE EXCEPTIONS
+        if ($e instanceof HttpBadRequestExeption) 
+            return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+
+        if ($e instanceof HttpNotFoundExeption)
+            return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }

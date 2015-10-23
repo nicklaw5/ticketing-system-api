@@ -2,19 +2,16 @@
 
 namespace Stryve\Exceptions;
 
-/**
- * Exception class
- */
 class StryveException extends \Exception
 {
 	/**
-     * Throw a new exception
+     * Throw a new Styve Exception
      *
-     * @param string $msg Exception Message
+     * @param string $msg
+     * @param int $code
      */
-    public function __construct($msg = '')
+    public function __construct($msg = 'An unknown error occured', $code  = 0)
     {
-    	$msg = ($msg == '')? 'error' : 'error: ' . $msg; 
-        parent::__construct($msg);
+        parent::__construct($msg, $code);
     } 
 }
