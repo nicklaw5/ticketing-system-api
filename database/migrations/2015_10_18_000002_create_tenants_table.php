@@ -17,14 +17,17 @@ class CreateTenantsTable extends Migration
             $t->increments('id');
             // tenant_uuid'
             $t->string('subdomain', 40)->unique();  // use this for db_name also
+            $t->string('db_name', 40)->unique();    // replace dashsed in subdomain with underscores
             $t->string('db_connection', 20);
 
             // OWNER COLUMNS
+            $t->string('owner_company_nane');
             $t->string('owner_first_name');
             $t->string('owner_last_name')->nullable();
             $t->string('owner_email');
             $t->string('owner_phone_ac')->nullable();
             $t->string('owner_phone')->nullable();
+            $t->string('owner_ip', 15);
 
             // LARAVE\CASHIER COLUMNS
             $t->tinyInteger('stripe_active')->default(0);

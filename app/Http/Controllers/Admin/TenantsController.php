@@ -47,10 +47,10 @@ class TenantsController extends Controller
      */
     public function store(NewTenantRequest $request)
     {
-        $api = new ApiResponses;
+        // $api = new ApiResponses;
 
-        return $api->respondOk();
-        throw new HttpBadRequestExeption;
+        // return $api->respondOk();
+        // throw new HttpBadRequestExeption;
         // dd($t->getCode());
         // dd($test->getMessage());
         
@@ -69,17 +69,32 @@ class TenantsController extends Controller
         /** Tenant Registration Process **/
         /*********************************/
 
-        //  > check subdomain meets length and regex specifications
-        //  > check subdomain is not excluded - return on error
-        //  > check subdomain isn't already taken - return on error
         //  > check email address doesn't already exist -return on error
+
+        //  > check subdomain meets length and regex specifications
+        
+        //  > check subdomain is not excluded - return on error
+
+        //  > check subdomain isn't already taken - return on error
+        
+        $tenant_subdomain = 'test_tenant';
+
+        $db_name = $tenant_subdomain;
+
+        $newConnection = $this->tenant->setNewTenantDatabaseConnection($db_name);
+        
+        $this->tenant->createNewTenantDb($newConnection['database']);
+
+        $this->tenant->runNewTenantMigration($newConnection['database']);
+
+        // $this->tenant->resetDefaultDatabaseConnection();
+        echo 'done';
 
         //  > count number of table from each database server
         //  > select database server with the least number of databases
         //  > create new database for the new tenant
         //  > perform initaial database table migration for new tenant
-        //  > perform initial database seed for the new tenant (perhaps include some example data)
-        //  > 
+        //  > perform initial database seed for the new tenant (perhaps include some example data)        //  > 
     }
 
     /**

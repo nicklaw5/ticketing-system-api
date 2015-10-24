@@ -34,3 +34,19 @@ function isValidEmailAddress($emailAddress)
 
 	return true;
 }
+
+/**
+ * Converts a string to NULL if empty
+ * 
+ * @param string
+ * @return mixed
+ */
+function emptyStringToNull($string)
+{
+	$string = (string) trim($string);
+	
+	if($string === '')
+		return null;
+
+	return $string;
+}
