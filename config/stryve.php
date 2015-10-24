@@ -5,7 +5,8 @@ return [
 	/**
 	 * Are we accepting registrations at the moment?
 	 */
-	'accept-registraions' => true,
+
+	'accepting-registraions' => true,
 
 	/**
 	 * Various default/central configurations for tenants
@@ -22,6 +23,8 @@ return [
 			// subdomain: a-Z, 0-9, and hypens (no hypens at start or end)
 			'regex' => '^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]))*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ig'
 		],
+
+		
 	],
 	
 ];

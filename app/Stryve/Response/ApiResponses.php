@@ -2,8 +2,6 @@
 
 namespace Stryve\Response;
 
-use Config;
-
 class ApiResponses {
 
     // HTTP Response Codes
@@ -482,6 +480,7 @@ class ApiResponses {
      */
     protected function respond($body, $headers = [])
     {
+        $headers[] = 'HTTP/1.1 ' . $this->getStatusCode() . ' ' . $this->getStatusText();
         return response()->json($body, $this->getStatusCode(), $headers);
     }
 

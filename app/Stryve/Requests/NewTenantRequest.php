@@ -12,7 +12,7 @@ class NewTenantRequest extends Request
      * @return bool
      */
     public function authorize()
-    {
+    {       
         return true;
     }
 

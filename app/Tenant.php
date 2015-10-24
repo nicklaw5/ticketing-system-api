@@ -40,4 +40,5 @@ class Tenant extends Model implements BillableContract
      * @var array
      */
     protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
+
 }

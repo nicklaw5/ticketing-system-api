@@ -20,3 +20,17 @@ function arrayToStdClassObject(array $array)
 {
 	return json_decode(json_encode($array));
 }
+
+/**
+ * Tests that a given email address is valid
+ * 
+ * @param string $emailAddress
+ * @return bool
+ */
+function isValidEmailAddress($emailAddress)
+{
+	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		return false;
+
+	return true;
+}

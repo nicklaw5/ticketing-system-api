@@ -15,9 +15,16 @@ class CreateTenantsTable extends Migration
         Schema::create('tenants', function(Blueprint $t)
         {
             $t->increments('id');
-            // $t->binary('tenant_uuid', 16)->unique();
+            // tenant_uuid'
             $t->string('subdomain', 40)->unique();  // use this for db_name also
             $t->string('db_connection', 20);
+
+            // OWNER COLUMNS
+            $t->string('owner_first_name');
+            $t->string('owner_last_name')->nullable();
+            $t->string('owner_email');
+            $t->string('owner_phone_ac')->nullable();
+            $t->string('owner_phone')->nullable();
 
             // LARAVE\CASHIER COLUMNS
             $t->tinyInteger('stripe_active')->default(0);
@@ -35,7 +42,7 @@ class CreateTenantsTable extends Migration
         $db_prefix = Config::get('database.connections.'.env('DB_CONNECTION_0', 'dev_').'.prefix');
 
         // add tenant_uuid column as 16 digit binary
-        DB::statement("ALTER TABLE `".$db_prefix."tenants` ADD `tenant_uuid` BINARY(16) NOT NULL UNIQUE AFTER `id`");
+        DB::statement("ALTER TABLE `".$db_prefix."tenants` ADD `uuid` BINARY(16) NOT NULL UNIQUE AFTER `id`");
     }
 
     /**

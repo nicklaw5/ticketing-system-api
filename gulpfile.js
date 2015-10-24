@@ -12,21 +12,5 @@ var elixir = require('laravel-elixir');
  */
   
 elixir(function(mix) {
-   mix.styles([
-        'icons/icomoon/styles.css',
-        'minified/bootstrap.min.css',
-        'minified/core.min.css',
-        'minified/components.min.css',
-        'minified/colors.min.css'
-    ], 'public/assets/css/public-styles.css')
-
-   	.scripts([
-   		'plugins/loaders/pace.min.js',
-   		'core/libraries/jquery.min.js',
-   		'core/libraries/bootstrap.min.js',
-   		'plugins/loaders/blockui.min.js',
-   		'core/app.js'
-   	], 'public/assets/js/public-js.js');
-
-   // .mix.version('assets/css/public-styles.css');
+     // .mix.version('assets/css/public-styles.css');
 });

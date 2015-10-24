@@ -32,25 +32,31 @@ class ReservedSubdomain extends Model
      */
     public function createOrUpdate($attributes)
     {
-    	$subdomain = $this->firstOrNew([
-    			'' => 
-    		]
-    	);
-    	// $subdomain = $this->firstOrCreate([
-    	// 		''
-    	// 	]
-    	// );
+    	
     }
 
     /**
-     * Tests if subdomain already exists
+     * Returns a subdomain record if exists, or NULL if not
      * 
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @param string $subdomain 
      * @return mixed 
      */
     public function findBySubdomain($subdomain)
     {
-    	
+    	return $this->where('subdomain', strtolower($subdomain))->first();
+    }
+
+    /**
+     * Checks if a given subdomain is reserved
+     * 
+     * @param string
+     * @return bool
+     */
+    public function isReserved($subdomain)
+    {
+        if($this->findBySubdomain($subdomain))
+            return true;
+
+        return false;
     }
 }

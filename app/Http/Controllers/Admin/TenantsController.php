@@ -47,9 +47,9 @@ class TenantsController extends Controller
      */
     public function store(NewTenantRequest $request)
     {
-        // $api = new ApiResponses;
+        $api = new ApiResponses;
 
-        // return $api->respondOk(['holla' => 'asas']);
+        return $api->respondOk();
         throw new HttpBadRequestExeption;
         // dd($t->getCode());
         // dd($test->getMessage());
