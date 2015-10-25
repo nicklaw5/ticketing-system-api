@@ -8,6 +8,8 @@ use Exception;
 use Stryve\Exceptions\InvalidSubdomainException;
 use Stryve\Exceptions\TenantAlreadyExistsException;
 
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -50,11 +52,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        // LARAVEL EXCEPTIONS
+        /**********************/
+        /* LARAVEL EXCEPTIONS */
+        /**********************/
         if ($e instanceof ModelNotFoundException)
-            $e = new NotFoundHttpException($e->getMessage(), $e);
+            return $this->api->respondNotFound($e->getMessage(), $e->getCode());
 
-        // STRYVE EXCEPTIONS
+        if ($e instanceof MethodNotAllowedHttpException)
+            return $this->api->respondMethodNotAllowed($e->getMessage(), $e->getCode());
+
+
+        /*********************/
+        /* STRYVE EXCEPTIONS */
+        /*********************/
         if ($e instanceof InvalidSubdomainException) 
             return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 

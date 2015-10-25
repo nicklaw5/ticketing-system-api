@@ -2,7 +2,7 @@
 
 namespace Stryve\Response;
 
-class ApiResponses {
+class ApiResponse {
 
     // HTTP Response Codes
     const HTTP_OK = 200;

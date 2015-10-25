@@ -36,6 +36,13 @@ class CreateUserPhonesTable extends Migration
      */
     public function down()
     {
+        Schema::table('user_phones', function(Blueprint $t)
+        {
+            $t->dropForeign('user_phones_user_id_foreign');
+            $t->dropForeign('user_phones_updated_by_foreign');
+            $t->dropForeign('user_phones_deleted_by_foreign');
+        });
+
         Schema::drop('user_phones');
     }
 }

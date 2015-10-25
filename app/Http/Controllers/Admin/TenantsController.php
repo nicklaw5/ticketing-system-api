@@ -57,55 +57,41 @@ class TenantsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
-        /*********************************/
-        /** Tenant Registration Process **/
-        /*********************************/
-        // sanitize passed params
-        // $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
-        /** Request Attributes **/
-        // array:6 [
-        //   "full_name" => "Nick Law"
-        //   "company" => "Stryve Technologies"
-        //   "subdomain" => "stryve"
-        //   "phone" => "0423 640 190"
-        //   "email" => "nick@stryve.io"
-        // ]
-
-        $subdomain = 'test-tenant';
+    {
+        // sanitize passed params and get geo data
+        $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
 
         // check subdomain meets length and regex specifications
-        if(! $this->tenant->validateSubdomain($subdomain))
+        if(! $this->tenant->validateSubdomain($request->subdomain))
             throw new InvalidSubdomainException;
         
         // check subdomain is not already taken
-        if($this->tenant->findBySudomain($subdomain))
+        if($this->tenant->findBySudomain($request->subdomain))
             throw new TenantAlreadyExistsException;
 
         // check subdomain is not reserved
-        if($this->reserved_subdomain->isReserved($subdomain))
+        if($this->reserved_subdomain->isReserved($request->subdomain))
             throw new TenantAlreadyExistsException;
         
+        // set the connection to install the new tenant database
+        $newConnection = $this->tenant->setNewTenantDatabaseConnection($request->db_name);
+
         // count number of table from each database server
         // select database server with the least number of databases
-
         // create new database for the new tenant
+        $this->tenant->createNewTenantDb($newConnection['database']);
         
         // perform initaial database table migration
+        $this->tenant->runNewTenantMigration($newConnection['database']);
         
         // perform initial database seed
 
-        
-
-        $db_name = 'test_tenant'; // $subdomain;
-
-        $newConnection = $this->tenant->setNewTenantDatabaseConnection($db_name);
-        
-        $this->tenant->createNewTenantDb($newConnection['database']);
-
-        $this->tenant->runNewTenantMigration($newConnection['database']);
 
         // $this->tenant->resetDefaultDatabaseConnection();
+        
+        // add request data to stryve admin database
+        
+        // \Artisan::call('migrate:rollback');
         echo 'done';
 
     }

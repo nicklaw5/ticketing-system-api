@@ -37,6 +37,13 @@ class CreateUserEmailsTable extends Migration
      */
     public function down()
     {
+        Schema::table('user_emails', function(Blueprint $t)
+        {
+            $t->dropForeign('user_emails_user_id_foreign');
+            $t->dropForeign('user_emails_updated_by_foreign');
+            $t->dropForeign('user_emails_deleted_by_foreign');
+        });
+
         Schema::drop('user_emails');
     }
 }

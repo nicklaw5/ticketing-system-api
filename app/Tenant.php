@@ -8,6 +8,8 @@ use GeoIP;
 use Config;
 use Artisan;
 
+use Stryve\Exceptions\TenantAlreadyExistsException;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -98,7 +100,7 @@ class Tenant extends Model implements BillableContract
     /**
      * Santizes and expands on the register params
      * 
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Request $request
      */
     public function sanitizeAndExpandRegistrationRequest($request)
@@ -107,25 +109,39 @@ class Tenant extends Model implements BillableContract
         // array:6 [
         //   "full_name" => "Nick Law"
         //   "company" => "Stryve Technologies"
-        //   "subdomain" => "stryve"
-        //   "phone" => "0423 640 190"
+        //   "subdomain" => "stryve_tech"
+        //   "phone" => "0423 640 190" (optional)
         //   "email" => "nick@stryve.io"
         // ]
-        
 
         $full_name              = explode(' ', trim($request->full_name));
-        $request->first_name    = $full_name[0];
-        $request->last_name     = emptyStringToNull(implode(' ', array_shift($full_name)));
+        $request->first_name	= array_shift($full_name);        
+        $request->last_name     = emptyStringToNull(implode(' ', $full_name));
         $request->email         = trim($request->email);
         $request->phone         = emptyStringToNull($request->phone);
-
-        $request->company       = trim($request->company);
+        $request->organisation	= trim($request->organisation);
         $request->subdomain     = lowertrim($request->subdomain);
-        $request->db_name       = replaceHyphens($request->subdomain, '_');
+        $request->db_name       = replaceHyphens($request->subdomain, '_');        
 
-        $geo = arrayToStdClassObject(GeoIP::getLocation($request->ip));
+        $request = $this->getUserGeoDataFromRequest($request);
+        
+        return $request;
+    }
 
-		// isoCode "AU"
+    /**
+     * Adds geoloacation data to the request based
+     * on the passed IP address.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Request $request
+     */
+    public function getUserGeoDataFromRequest($request)
+    {
+    	// get geo data
+    	$geo = arrayToStdClassObject(GeoIP::getLocation($request->ip));
+
+    	// EXAMPLE:
+    	// isoCode "AU"
 		// country "Australia"
 		// city "South Yarra"
 		// state "VIC"
@@ -134,19 +150,15 @@ class Tenant extends Model implements BillableContract
 		// lon 144.9833
 		// timezone "Australia/Melbourne"
 		// continent "OC"
-		
-        $request->ip 			= $geo->ip;
-        $request->isoCode		= $geo->isoCode;
-        $request->country		= $geo->country;
-        $request->city			= $geo->city;
-        $request->state			= $geo->state;
-        $request->post_code		= $geo->post_code;
-        $request->lat			= $geo->lat;
-        $request->long			= $geo->long;
-        $request->timezone		= $geo->timezone;
-        $request->continent		= $geo->continent;
-        
-        return $request;
+
+    	// did we get valid data (true = false)
+    	$isValidData = ($geo->default)? false: true;
+
+    	// set request param
+    	foreach ($geo as $key => $value)
+    		$request->{$key} = ($isValidData)? $value : null;
+
+    	return $request;
     }
 
     /**
@@ -187,10 +199,12 @@ class Tenant extends Model implements BillableContract
     public function validateSubdomain($subdomain)
     {
         $subdomain = lowertrim($subdomain);
-        $max_length = Config::get('stryve.tenant.subdomain-length');
+        $min_length = Config::get('stryve.tenant.subdomain-min-length');
+        $max_length = Config::get('stryve.tenant.subdomain-max-length');
+        $subdomain_length = strlen($subdomain);
 
         // check subdomain meets length requirements
-        if(strlen($subdomain) > $max_length)
+        if($subdomain_length < $min_length || $subdomain_length > $max_length)
             return false;
 
         // check subdomain is of valid characters

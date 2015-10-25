@@ -5,7 +5,6 @@ return [
 	/**
 	 * Are we accepting registrations at the moment?
 	 */
-
 	'accepting-registraions' => true,
 
 	/**
@@ -14,7 +13,9 @@ return [
 	'tenant' => [
 
 		// The maximum allowable character length for a tenant's subdomain
-		'subdomain-length' => 40
+		'subdomain-min-length' => 3,
+		'subdomain-max-length' => 40
+
 	],
 	
 ];
