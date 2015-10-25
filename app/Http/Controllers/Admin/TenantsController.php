@@ -74,12 +74,12 @@ class TenantsController extends Controller
             throw new TenantAlreadyExistsException;
         
         // set the connection to install the new tenant database
-        $newConnection = $this->tenant->setNewTenantDatabaseConnection($request->db_name);
+        $newConnection = $this->tenant->setNewTenantDatabaseConnection($request->database);
 
         // count number of table from each database server
         // select database server with the least number of databases
         // create new database for the new tenant
-        $this->tenant->createNewTenantDb($newConnection['database']);
+        $this->tenant->createNewTenantDatabase($newConnection['database']);
         
         // perform initaial database table migration
         $this->tenant->runNewTenantMigration($newConnection['database']);

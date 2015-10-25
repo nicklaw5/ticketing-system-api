@@ -65,18 +65,19 @@ class Tenant extends Model implements BillableContract
     /**
      * Creates new tenants database
      * 
-     * @param string $db_name 
+     * @param string $database 
      * @param string $connection 
      * @return int
      */
-    public function createNewTenantDb($db_name)
+    public function createNewTenantDatabase($database)
     {
         try 
         {
-            return DB::statement(DB::raw('CREATE DATABASE ' . $db_name));
+            return DB::statement(DB::raw('CREATE DATABASE ' . $database));
         }
         catch(\Exception $e)
         {
+            // database probably already exists?
             /** TODO: LOG ERROR **/
             throw new TenantAlreadyExistsException;
         }
@@ -86,13 +87,13 @@ class Tenant extends Model implements BillableContract
      * Run initial table migration on newly created tenant database.
      * 
      * @param string $connection
-     * @param string $db_name
+     * @param string $database
      * @return void 
      */
-    public function runNewTenantMigration($db_name)
+    public function runNewTenantMigration($database)
     {
         Artisan::call('migrate', [
-            '--database' => $db_name,
+            '--database' => $database,
             '--path' => 'app/Stryve/Database/Migrations/Tenant'
         ]);
     }
@@ -121,7 +122,7 @@ class Tenant extends Model implements BillableContract
         $request->phone         = emptyStringToNull($request->phone);
         $request->organisation	= trim($request->organisation);
         $request->subdomain     = lowertrim($request->subdomain);
-        $request->db_name       = replaceHyphens($request->subdomain, '_');        
+        $request->database      = replaceHyphens($request->subdomain, '_');
 
         $request = $this->getUserGeoDataFromRequest($request);
         
