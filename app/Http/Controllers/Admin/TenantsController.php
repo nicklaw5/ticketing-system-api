@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Validator;
 use App\Tenant;
+use App\ReservedSubdomain;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Stryve\Requests\NewTenantRequest;
 use Stryve\Response\ApiResponses;
 
-use Stryve\Exceptions\Http\HttpBadRequestExeption;
+use Stryve\Exceptions\InvalidSubdomainException;
+use Stryve\Exceptions\TenantAlreadyExistsException;
 
 class TenantsController extends Controller
 {
@@ -19,14 +22,20 @@ class TenantsController extends Controller
     protected $tenant;
 
     /**
+     * @var \App\ReservedSubdomain
+     */
+    protected $reserved_subdomain;
+
+    /**
      * Instantiate a new instance
      * 
      * @param \App\Tenant
      * @return void
      */
-    public function __construct(Tenant $tenant)
+    public function __construct(Tenant $tenant, ReservedSubdomain $reserved_subdomain)
     {
         $this->tenant = $tenant;
+        $this->reserved_subdomain = $reserved_subdomain;
     }
 
     /**
@@ -40,46 +49,55 @@ class TenantsController extends Controller
     }
 
     /**
-     * Registers a new tenant.
+     * Register a new tenant.
      *
-     * @param  \Stryve\Requests\NewTenantRequest  $request
+     * @throws \Stryve\Exceptions\InvalidSubdomainException;
+     * @throws \Stryve\Exceptions\TenantAlreadyExistsException;
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(NewTenantRequest $request)
-    {
-        // $api = new ApiResponses;
-
-        // return $api->respondOk();
-        // throw new HttpBadRequestExeption;
-        // dd($t->getCode());
-        // dd($test->getMessage());
-        
-        // dd($request->all());
+    public function store(Request $request)
+    {  
+        /*********************************/
+        /** Tenant Registration Process **/
+        /*********************************/
+        // sanitize passed params
+        // $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
         /** Request Attributes **/
         // array:6 [
-        //   "first_name" => "Nick"
-        //   "last_name" => "Law"
-        //   "Company" => "Stryve Technologies"
+        //   "full_name" => "Nick Law"
+        //   "company" => "Stryve Technologies"
         //   "subdomain" => "stryve"
         //   "phone" => "0423 640 190"
         //   "email" => "nick@stryve.io"
         // ]
 
-        /*********************************/
-        /** Tenant Registration Process **/
-        /*********************************/
+        $subdomain = 'test-tenant';
 
-        //  > check email address doesn't already exist -return on error
-
-        //  > check subdomain meets length and regex specifications
+        // check subdomain meets length and regex specifications
+        if(! $this->tenant->validateSubdomain($subdomain))
+            throw new InvalidSubdomainException;
         
-        //  > check subdomain is not excluded - return on error
+        // check subdomain is not already taken
+        if($this->tenant->findBySudomain($subdomain))
+            throw new TenantAlreadyExistsException;
 
-        //  > check subdomain isn't already taken - return on error
+        // check subdomain is not reserved
+        if($this->reserved_subdomain->isReserved($subdomain))
+            throw new TenantAlreadyExistsException;
         
-        $tenant_subdomain = 'test_tenant';
+        // count number of table from each database server
+        // select database server with the least number of databases
 
-        $db_name = $tenant_subdomain;
+        // create new database for the new tenant
+        
+        // perform initaial database table migration
+        
+        // perform initial database seed
+
+        
+
+        $db_name = 'test_tenant'; // $subdomain;
 
         $newConnection = $this->tenant->setNewTenantDatabaseConnection($db_name);
         
@@ -90,11 +108,6 @@ class TenantsController extends Controller
         // $this->tenant->resetDefaultDatabaseConnection();
         echo 'done';
 
-        //  > count number of table from each database server
-        //  > select database server with the least number of databases
-        //  > create new database for the new tenant
-        //  > perform initaial database table migration for new tenant
-        //  > perform initial database seed for the new tenant (perhaps include some example data)        //  > 
     }
 
     /**
@@ -140,5 +153,15 @@ class TenantsController extends Controller
     public function tenantExists($string)
     {
         //
+    }
+
+    /**
+     * Gets the value of reserved_subdomain.
+     *
+     * @return \App\ReservedSubdomain
+     */
+    public function getReservedSubdomain()
+    {
+        return $this->reserved_subdomain;
     }
 }

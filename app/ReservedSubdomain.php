@@ -43,13 +43,13 @@ class ReservedSubdomain extends Model
      */
     public function findBySubdomain($subdomain)
     {
-    	return $this->where('subdomain', strtolower($subdomain))->first();
+    	return $this->where('subdomain', lowertrim($subdomain))->first();
     }
 
     /**
      * Checks if a given subdomain is reserved
      * 
-     * @param string
+     * @param string $subdomain
      * @return bool
      */
     public function isReserved($subdomain)

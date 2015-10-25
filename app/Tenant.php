@@ -4,6 +4,7 @@ namespace App;
 
 use DB;
 use App;
+use GeoIP;
 use Config;
 use Artisan;
 
@@ -48,6 +49,17 @@ class Tenant extends Model implements BillableContract
      */
     protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 
+    // /**
+    //  * @var array
+    //  */
+    // public $newTenantValidation = [
+    //     'full_name' => 'required'
+    //     'company'   => 'required'
+    //     'subdomain' => 'required'
+    //     'phone'     => 'max:16'
+    //     'email'     => 'required|email'
+    // ];
+    
     /**
      * Creates new tenants database
      * 
@@ -64,7 +76,7 @@ class Tenant extends Model implements BillableContract
         catch(\Exception $e)
         {
             /** TODO: LOG ERROR **/
-            throw new TenantDatabaseAlreadyExists;
+            throw new TenantAlreadyExistsException;
         }
     }
 
@@ -81,6 +93,60 @@ class Tenant extends Model implements BillableContract
             '--database' => $db_name,
             '--path' => 'app/Stryve/Database/Migrations/Tenant'
         ]);
+    }
+
+    /**
+     * Santizes and expands on the register params
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Request $request
+     */
+    public function sanitizeAndExpandRegistrationRequest($request)
+    {
+        /** Request Attributes **/
+        // array:6 [
+        //   "full_name" => "Nick Law"
+        //   "company" => "Stryve Technologies"
+        //   "subdomain" => "stryve"
+        //   "phone" => "0423 640 190"
+        //   "email" => "nick@stryve.io"
+        // ]
+        
+
+        $full_name              = explode(' ', trim($request->full_name));
+        $request->first_name    = $full_name[0];
+        $request->last_name     = emptyStringToNull(implode(' ', array_shift($full_name)));
+        $request->email         = trim($request->email);
+        $request->phone         = emptyStringToNull($request->phone);
+
+        $request->company       = trim($request->company);
+        $request->subdomain     = lowertrim($request->subdomain);
+        $request->db_name       = replaceHyphens($request->subdomain, '_');
+
+        $geo = arrayToStdClassObject(GeoIP::getLocation($request->ip));
+
+		// isoCode "AU"
+		// country "Australia"
+		// city "South Yarra"
+		// state "VIC"
+		// postal_code "3141"
+		// lat -37.8333
+		// lon 144.9833
+		// timezone "Australia/Melbourne"
+		// continent "OC"
+		
+        $request->ip 			= $geo->ip;
+        $request->isoCode		= $geo->isoCode;
+        $request->country		= $geo->country;
+        $request->city			= $geo->city;
+        $request->state			= $geo->state;
+        $request->post_code		= $geo->post_code;
+        $request->lat			= $geo->lat;
+        $request->long			= $geo->long;
+        $request->timezone		= $geo->timezone;
+        $request->continent		= $geo->continent;
+        
+        return $request;
     }
 
     /**
@@ -109,5 +175,53 @@ class Tenant extends Model implements BillableContract
 
         // return the new connection options
         return $newConnection;
+    }
+
+    /**
+     * Determines whether or not the provided subdomain
+     * meets subdomain length and character requirements.
+     * 
+     * @param string $subdomain
+     * @return bool
+     */
+    public function validateSubdomain($subdomain)
+    {
+        $subdomain = lowertrim($subdomain);
+        $max_length = Config::get('stryve.tenant.subdomain-length');
+
+        // check subdomain meets length requirements
+        if(strlen($subdomain) > $max_length)
+            return false;
+
+        // check subdomain is of valid characters
+        if(! isValidSubdomain($subdomain))
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Returns a tenant record if exists, or NULL if not
+     * 
+     * @param string $subdomain
+     * @return mixed
+     */
+    public function findBySudomain($subdomain)
+    {
+        return $this->where('subdomain', lowertrim($subdomain))->first();
+    }
+
+    /**
+     * Checks if a tenant exists
+     * 
+     * @param string $subdomain
+     * @return bool
+     */
+    public function exists($subdomain)
+    {
+        if($this->findBySubdomain($subdomain))
+            return true;
+
+        return false;
     }
 }

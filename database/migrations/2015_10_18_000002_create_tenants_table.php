@@ -25,8 +25,7 @@ class CreateTenantsTable extends Migration
             $t->string('owner_first_name');
             $t->string('owner_last_name')->nullable();
             $t->string('owner_email');
-            $t->string('owner_phone_ac')->nullable();
-            $t->string('owner_phone')->nullable();
+            $t->string('owner_phone', 16)->nullable();
             $t->string('owner_ip', 15);
 
             // LARAVE\CASHIER COLUMNS

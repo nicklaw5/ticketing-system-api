@@ -5,9 +5,9 @@ namespace App\Exceptions;
 use Exception;
 
 // STRYVE EXCEPTIONS
-use Stryve\Exceptions\Http\HttpNotFoundExeption;
-use Stryve\Exceptions\Http\HttpBadRequestExeption;
-use Stryve\Exceptions\TenantDatabaseAlreadyExists;
+use Stryve\Exceptions\InvalidSubdomainException;
+use Stryve\Exceptions\TenantAlreadyExistsException;
+
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -55,14 +55,11 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
 
         // STRYVE EXCEPTIONS
-        if ($e instanceof TenantDatabaseAlreadyExists) 
+        if ($e instanceof InvalidSubdomainException) 
             return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 
-        // if ($e instanceof HttpBadRequestExeption) 
-        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
-
-        // if ($e instanceof HttpNotFoundExeption)
-        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+        if ($e instanceof TenantAlreadyExistsException) 
+            return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }

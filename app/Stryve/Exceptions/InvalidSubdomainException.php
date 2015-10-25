@@ -4,12 +4,12 @@ namespace Stryve\Exceptions;
 
 use Stryve\Exceptions\StryveException;
 
-class TenantDatabaseAlreadyExists extends StryveException
+class InvalidSubdomainException extends StryveException
 {
 	/**
      * {@inheritdoc}
      */
-    public function __construct($msg = 'Unable to create database.', $code = 4001)
+    public function __construct($msg = 'Invalid subdomain.', $code = 4002)
     {
         parent::__construct($msg, $code);
     }

@@ -50,3 +50,58 @@ function emptyStringToNull($string)
 
 	return $string;
 }
+
+/**
+ * Determines whether or not the provided string
+ * meets subdomain character requirements.
+ * 
+ * @param string $string
+ * @return bool
+ */
+function isValidSubdomain($string)
+{
+	// The regular expression for allowable characters in a	subdomain: a-Z, 0-9, and hypens (no hypens at start or end)
+	$pattern = '/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]))*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/i';
+
+	if(1 !== preg_match($pattern, $string))
+		return false;
+
+	return true;
+}
+
+/**
+ * Converts and returns a string after being
+ * trimmed and lowered.
+ * 
+ * @param string $string
+ * @return string
+ */
+function lowertrim($string)
+{
+	return strtolower(trim($string));
+}
+
+/**
+ * Converts and returns a string after being
+ * trimmed and uppered.
+ * 
+ * @param string $string
+ * @return string
+ */
+function uppertrim($string)
+{
+	return strtoupper(trim($string));
+}
+
+/**
+ * Replace all occurances of hyphens (-)
+ * with the replacement param.
+ * 
+ * @param string $string
+ * @param string $replacement
+ * @return void 
+ */
+function replaceHyphens($string, $replacement)
+{
+	return preg_replace('/[\-]/', $replacement, $string);
+}

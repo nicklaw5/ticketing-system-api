@@ -155,6 +155,8 @@ return [
         // LARAVEL CASHIER
         Laravel\Cashier\CashierServiceProvider::class,
 
+        // LARAVEL 5 GEOIP
+        Torann\GeoIP\GeoIPServiceProvider::class,
 
     ],
 
@@ -211,10 +213,12 @@ return [
         // OAuth2Server
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
 
-        //HTML & FORM FACADES
+        // HTML & FORM FACADES
         'Form'      => Illuminate\Html\FormFacade::class,
         'Html'      => Illuminate\Html\HtmlFacade::class,
 
+        // LARAVEL 5 GEOIP
+        'GeoIP' => Torann\GeoIP\GeoIPFacade::class,
     ],
 
 ];
