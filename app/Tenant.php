@@ -8,6 +8,7 @@ use GeoIP;
 use Config;
 use Artisan;
 
+use Stryve\Database\ConnectOTF;
 use Stryve\Exceptions\TenantAlreadyExistsException;
 
 use Illuminate\Database\Eloquent\Model;
@@ -115,16 +116,19 @@ class Tenant extends Model implements BillableContract
         //   "email" => "nick@stryve.io"
         // ]
 
-        $full_name              = explode(' ', trim($request->full_name));
-        $request->first_name	= array_shift($full_name);        
-        $request->last_name     = emptyStringToNull(implode(' ', $full_name));
-        $request->email         = trim($request->email);
-        $request->phone         = emptyStringToNull($request->phone);
-        $request->organisation	= trim($request->organisation);
-        $request->subdomain     = lowertrim($request->subdomain);
-        $request->database      = replaceHyphens($request->subdomain, '_');
+        $full_name              	= explode(' ', trim($request->full_name));
+        $request->first_name		= array_shift($full_name);        
+        $request->last_name     	= emptyStringToNull(implode(' ', $full_name));
+        $request->email         	= trim($request->email);
+        $request->phone         	= emptyStringToNull($request->phone);
+        $request->organisation		= trim($request->organisation);
+        $request->subdomain         = lowertrim($request->subdomain);
+        $request->database          = replaceHyphens($request->subdomain, '_');
+        $request->database_prefix   = generateRandomString(4, false, true, false);
 
-        $request = $this->getUserGeoDataFromRequest($request);
+        // dd($request->database_prefix);
+
+        $request = $this->addUserGeoDataToRequest($request);
         
         return $request;
     }
@@ -136,7 +140,7 @@ class Tenant extends Model implements BillableContract
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Request $request
      */
-    public function getUserGeoDataFromRequest($request)
+    public function addUserGeoDataToRequest($request)
     {
     	// get geo data
     	$geo = arrayToStdClassObject(GeoIP::getLocation($request->ip));
@@ -166,28 +170,37 @@ class Tenant extends Model implements BillableContract
      * Sets the database connection for creating a new tenant
      * database and for running initial table migrations
      * 
-     * @param string $subdomain
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
-    public function setNewTenantDatabaseConnection($db_name)
+    // public function setNewTenantDatabaseConnection($request)
+    public function setNewDbConnection($request)
     {
+    	return new ConnectOTF([
+	    		'database' 	=> $request->database,
+	    		'prefix'	=> $request->database_prefix
+    		]
+    	);
+
+    	// dd($oft);
+    		
         // get the available connections
-        $connections = Config::get('database.connections');
+        // $connections = Config::get('database.connections');
 
-        // get the default connection options
-        $defaultConnection = $connections[Config::get('database.default')];
+        // // get the default connection options
+        // $defaultConnection = $connections[Config::get('database.default')];
 
-        // clone the default connection options
-        $newConnection = $defaultConnection;
+        // // clone the default connection options
+        // $newConnection = $defaultConnection;
 
-        // override the database name to resprsent the new tenant
-        $newConnection['database'] = $db_name;
+        // // override the database name to resprsent the new tenant
+        // $newConnection['database'] = $database;
 
-        // set the new database connection
-        Config::set('database.connections.'.$db_name, $newConnection);
+        // // set the new database connection
+        // Config::set('database.connections.'.$database, $newConnection);
 
-        // return the new connection options
-        return $newConnection;
+        // // return the new connection options
+        // return $newConnection;
     }
 
     /**

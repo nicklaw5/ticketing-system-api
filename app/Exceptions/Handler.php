@@ -7,9 +7,9 @@ use Exception;
 // STRYVE EXCEPTIONS
 use Stryve\Exceptions\InvalidSubdomainException;
 use Stryve\Exceptions\TenantAlreadyExistsException;
+use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
 
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -70,6 +70,10 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof TenantAlreadyExistsException) 
             return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+
+        if ($e instanceof NoDatabaseConnectionFoundExceptoion) 
+            return $this->api->respondNotFound($e->getMessage(), $e->getCode());
+            
 
         return parent::render($request, $e);
     }

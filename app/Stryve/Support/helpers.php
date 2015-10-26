@@ -105,3 +105,22 @@ function replaceHyphens($string, $replacement)
 {
 	return preg_replace('/[\-]/', $replacement, $string);
 }
+
+/**
+ * Generates a random string with the provided length
+ * 
+ * @param int $length
+ * @return string
+ */
+function generateRandomString($length = 12, $numbers = true, $lowercase = true, $uppercase = true)
+{
+	$number_chars   = '0123456789';
+	$lower_chars 	= 'abcdefghijklmnopqrstuvwxyz';
+	$upper_chars 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	
+	$characters  = ($numbers)? $number_chars : '';
+	$characters .= ($lowercase)? $lower_chars : '';
+	$characters .= ($uppercase)? $upper_chars : '';
+
+	return substr(str_shuffle($characters), 0, $length);
+}

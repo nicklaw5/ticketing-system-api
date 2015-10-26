@@ -8,6 +8,9 @@ use App\ReservedSubdomain;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use Stryve\Database\ConnectOTF;
+
 use Stryve\Requests\NewTenantRequest;
 use Stryve\Response\ApiResponses;
 
@@ -20,6 +23,11 @@ class TenantsController extends Controller
      * @var \App\Tenant
      */
     protected $tenant;
+
+    /**
+     * @var \Illuminate\Database\Connection
+     */
+    protected $connection;
 
     /**
      * @var \App\ReservedSubdomain
@@ -54,12 +62,14 @@ class TenantsController extends Controller
      * @throws \Stryve\Exceptions\InvalidSubdomainException;
      * @throws \Stryve\Exceptions\TenantAlreadyExistsException;
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response (HTTP 201 Created)
      */
     public function store(Request $request)
     {
         // sanitize passed params and get geo data
         $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
+
+        // $this->tenant->setNewTenantDatabaseConnection($request);
 
         // check subdomain meets length and regex specifications
         if(! $this->tenant->validateSubdomain($request->subdomain))
@@ -72,9 +82,12 @@ class TenantsController extends Controller
         // check subdomain is not reserved
         if($this->reserved_subdomain->isReserved($request->subdomain))
             throw new TenantAlreadyExistsException;
+
+        //**** MADE IT TO HERE ****//
         
-        // set the connection to install the new tenant database
-        $newConnection = $this->tenant->setNewTenantDatabaseConnection($request->database);
+        // set the connection to insert the new tenant database
+        // $newConnection = $this->tenant->setNewTenantDatabaseConnection($request);
+        $connection = $this->tenant->setNewDbConnection($request);
 
         // count number of table from each database server
         // select database server with the least number of databases
@@ -89,7 +102,7 @@ class TenantsController extends Controller
 
         // $this->tenant->resetDefaultDatabaseConnection();
         
-        // add request data to stryve admin database
+        // add request data to stryve_admin database
         
         // \Artisan::call('migrate:rollback');
         echo 'done';

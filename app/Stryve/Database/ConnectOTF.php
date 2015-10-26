@@ -5,56 +5,9 @@ namespace Stryve\Database;
 use DB;
 use Config;
 
+use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
+
 class ConnectOTF {
-
-	/**
-	 * The name of the driver.
-	 *
-	 * @var string $driver
-	 */
-	protected $driver;
-
-	/**
-	 * The name of the host.
-	 *
-	 * @var string $host
-	 */
-	protected $host;
-
-	/**
-	 * The port number.
-	 *
-	 * @var int $port
-	 */
-	protected $port;
-
-	/**
-	 * The name of the database.
-	 *
-	 * @var string $database
-	 */
-	protected $database;
-
-	/**
-	 * The username needed to connect to the database.
-	 *
-	 * @var string $username
-	 */
-	protected $username;
-
-	/**
-	 * The password needed to connect to the database.
-	 *
-	 * @var string $password
-	 */
-	protected $password;
-
-	/**
-	 * The database tables prefix, if any.
-	 *
-	 * @var string $prefix
-	 */
-	protected $prefix;
 
 	/**
 	 * The on the fly database connection.
@@ -72,6 +25,20 @@ class ConnectOTF {
 	 */
 	protected $options;
 
+	/**
+	 * The default database connection options
+	 *
+	 * @var array
+	 */
+	protected $default_options;
+
+	/**
+	 * The name given to the connection
+	 *
+	 * @var string
+	 */
+	protected $connection_name;
+
 	// $options = [
 	// 	'driver'	=> 'pgsql', // or 'mysql'
 	// 	'host' 		=> $value,
@@ -85,28 +52,81 @@ class ConnectOTF {
 	// ];
 
 	/**
-	 * Create a new on the fly database
+	 * Create a new on the fly database connection
+	 * 
+	 * @param string $connection_name
+	 * @param array $options
+	 * @return void
+	 */
+	public function __construct($options = [], $connection_name = null)
+	{
+		// set default options so we can revert back to them later
+		$this->setDefaultOptions();
+
+		// set the connection name
+		$this->setConnectionName($connection_name);
+
+		// set the new connection options
+		$this->setConnectionOptions($options);
+
+		// dd($this->getConnectionOptions());
+
+		// create the connection
+		$this->setConnection();
+	}
+
+	/**
+	 * Gets the default connection options
+	 * 
+	 * @return array
+	 */
+	public function getDefaultOptions()
+	{
+		return $this->default_options;
+	}
+
+	/**
+	 * Sets the default connection options
+	 * 
+	 * @param array $default
+	 * @param array $options
+	 * @return void
+	 */
+	protected function setDefaultOptions()
+	{
+		$default = Config::get('database.default');
+
+		$this->default_options = Config::get('database.connections.'.$default);
+	}
+
+	/**
+	 * Gets the connection options
+	 * 
+	 * @return array
+	 */
+	public function getConnectionOptions()
+	{
+		return $this->options;
+	}
+
+	/**
+	 * Set the connection options
 	 * 
 	 * @param array $options
 	 * @return void
 	 */
-	public function __construct($options = null)
+	public function setConnectionOptions($options)
 	{
-		// set the connection driver
-		$this->setConnectionDriver($options);
-		
-		// get default connection options based on the set driver
-		$default = $this->getDefaultConnectionOptions();
+		// get the default options
+		$default = $this->getDefaultOptions();
 
-		// replace default options with the options passed in
+		// replace default options with those passed in
 		foreach($default as $item => $value)
 			$default[$item] = isset($options[$item]) ? $options[$item] : $default[$item];
-
-		// set the connection options
-		$this->setConnectionOptions($default);
-
-		// create the connection
-		$this->setConnection($this->options['database']);
+		
+		// set the new connetion options
+		Config::set('database.connections'.$this->getConnectionName(), $default);
+		$this->options = Config::get('database.connections'.$this->getConnectionName());
 	}
 
 	/**
@@ -126,49 +146,51 @@ class ConnectOTF {
 	 */
 	public function setConnection()
 	{
-		DB::connection($this->getConnectionDriver());
+		$this->connection = DB::connection($this->getConnectionName());
 	}
 
 	/**
-	 * Sets the connection driver.
+	 * Sets the connection name.
 	 *
 	 * @param array $options
 	 * @return void
 	 */
-	public function setConnectionDriver($options)
+	public function setConnectionName($connection_name)
 	{
-		$this->driver = isset($options['driver']) ? $options['driver'] : Config::get('database.default');
+		// if connection name set, check it exists
+		if($connection_name !== null)
+			$name = Config::get('database.connections.'.$connection_name);
+		else
+			$name = Config::get('database.default');
+
+		if($name === null)
+			throw new NoDatabaseConnectionFoundExceptoion;
+
+		$this->connection_name = $name;
 	}
 
 	/**
-	 * Gets the connection driver.
-	 *
+	 * Gets the connection name
+	 * 
+	 * @param string
 	 * @return string
 	 */
-	public function getConnectionDriver()
+	public function getConnectionName()
 	{
-		return $this->driver;
+		return $this->connection_name;
 	}
 
 	/**
-	 * Set the connection options
-	 * 
-	 * @param array $options
-	 * @return void
-	 */
-	public function setConnectionOptions($options)
-	{
-		$this->options = Config::set("database.connections.$this->getConnectionDriver", $options);
-	}
-
-	/**
-	 * Gets the connection driver.
+	 * Gets the default connection options.
 	 *
 	 * @return array
 	 */
-	public function getDefaulConnectiontOptions()
+	public function getDefaultConnectionOptions()
 	{
-		return Config::get('database.connections' . $this->getConnectionDriver);
+		// return Config::get('database.connections' . $this->getConnectionDriver);
+		$default = Config::get('database.default');
+
+		return Config::get('database.connections.'.$default);
 	}
 
 	/**
@@ -183,18 +205,18 @@ class ConnectOTF {
 	}
 
 
-	// from -> http://laravel.io/forum/09-13-2014-create-new-database-and-tables-on-the-fly
-	/**
-	 * Creates a new database schema.
-	 *
-	 * @param  string $schemaName The new schema name.
-	 * @return bool
-	 */
-	function createSchema($schemaName)
-	{
-	    // We will use the `statement` method from the connection class so that
-	    // we have access to parameter binding.
-	    return DB::getConnection()->statement('CREATE DATABASE :schema', array('schema' => $schemaName));
-	}
+	// // from -> http://laravel.io/forum/09-13-2014-create-new-database-and-tables-on-the-fly
+	// /**
+	//  * Creates a new database schema.
+	//  *
+	//  * @param  string $schemaName The new schema name.
+	//  * @return bool
+	//  */
+	// function createSchema($schemaName)
+	// {
+	//     // We will use the `statement` method from the connection class so that
+	//     // we have access to parameter binding.
+	//     return DB::getConnection()->statement('CREATE DATABASE :schema', array('schema' => $schemaName));
+	// }
 
 }
