@@ -1,6 +1,42 @@
 <?php
 
 /**
+ * Sets new database connection
+ * 
+ * @param string $connection_name
+ * @param array $options
+ * @return void
+ */
+function configureTenantConnection($connection_name, $options = [])
+{
+	// Will contain the array of connections that appear in our database config file.
+    $connections = \Config::get('database.connections');
+
+    // This line pulls out the default connection by key (by default it's `mysql`)
+    $default = \Config::get('database.default');
+    $defaultOptions = $connections[$default];
+
+    // Now we simply copy the default connection information to our new connection.
+    $newOptions = $defaultOptions;
+
+    // Override the database name.
+    foreach($newOptions as $item => $value)
+        $newOptions[$item] = isset($options[$item]) ? $options[$item] : $newOptions[$item];
+
+    // This will add our new connection to the run-time configuration for the duration of the request.
+    \Config::set('database.connections.'.$connection_name, $newOptions);
+
+    \DB::statement(\DB::raw('CREATE DATABASE ' . $newOptions['database']));
+
+    \Artisan::call('migrate', [
+        '--database' => $connection_name,
+        '--path' => 'app/Stryve/Database/Migrations/Tenant'
+    ]);
+
+    // dd(\Config::get('database.connections.'.$default));
+}
+
+/**
  * Gets the path to the Stryve folder
  * 
  * @return string

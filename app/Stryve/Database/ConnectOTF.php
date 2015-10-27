@@ -5,6 +5,7 @@ namespace Stryve\Database;
 use DB;
 use Config;
 
+use Stryve\Exceptions\TenantAlreadyExistsException;
 use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
 
 class ConnectOTF {
@@ -14,7 +15,6 @@ class ConnectOTF {
 	 *
 	 * @var \Illuminate\Database\Connection
 	 */
-
 	protected $connection;
 
 	/**
@@ -52,24 +52,22 @@ class ConnectOTF {
 	// ];
 
 	/**
-	 * Create a new on the fly database connection
+	 * Create a new on-the-fly database connection
 	 * 
 	 * @param string $connection_name
 	 * @param array $options
 	 * @return void
 	 */
 	public function __construct($options = [], $connection_name = null)
-	{
-		// set default options so we can revert back to them later
-		$this->setDefaultOptions();
-
+	{	
 		// set the connection name
 		$this->setConnectionName($connection_name);
 
+		// set default options so we can revert back to them later
+		$this->setDefaultOptions();
+
 		// set the new connection options
 		$this->setConnectionOptions($options);
-
-		// dd($this->getConnectionOptions());
 
 		// create the connection
 		$this->setConnection();
@@ -88,15 +86,11 @@ class ConnectOTF {
 	/**
 	 * Sets the default connection options
 	 * 
-	 * @param array $default
-	 * @param array $options
 	 * @return void
 	 */
 	protected function setDefaultOptions()
 	{
-		$default = Config::get('database.default');
-
-		$this->default_options = Config::get('database.connections.'.$default);
+		$this->default_options = Config::get('database.connections.'.$this->getConnectionName());
 	}
 
 	/**
@@ -124,9 +118,14 @@ class ConnectOTF {
 		foreach($default as $item => $value)
 			$default[$item] = isset($options[$item]) ? $options[$item] : $default[$item];
 		
+
 		// set the new connetion options
 		Config::set('database.connections'.$this->getConnectionName(), $default);
 		$this->options = Config::get('database.connections'.$this->getConnectionName());
+		// dd($this->getConnectionName());
+
+		// dd($this->getConnectionOptions());
+		// $this->options = $default;
 	}
 
 	/**
@@ -146,33 +145,30 @@ class ConnectOTF {
 	 */
 	public function setConnection()
 	{
+		// dd($this->getConnectionName());
+		// check connection exixts
+		if(null === Config::get('database.connections.'.$this->getConnectionName()))
+			throw new NoDatabaseConnectionFoundExceptoion;
+
+		dd(Config::get('database.connections.'.$this->getConnectionName()));
+
 		$this->connection = DB::connection($this->getConnectionName());
 	}
 
 	/**
 	 * Sets the connection name.
 	 *
-	 * @param array $options
+	 * @param array $connection_name
 	 * @return void
 	 */
 	public function setConnectionName($connection_name)
 	{
-		// if connection name set, check it exists
-		if($connection_name !== null)
-			$name = Config::get('database.connections.'.$connection_name);
-		else
-			$name = Config::get('database.default');
-
-		if($name === null)
-			throw new NoDatabaseConnectionFoundExceptoion;
-
-		$this->connection_name = $name;
+		$this->connection_name = ($connection_name !== null)? $connection_name : Config::get('database.default');
 	}
 
 	/**
 	 * Gets the connection name
 	 * 
-	 * @param string
 	 * @return string
 	 */
 	public function getConnectionName()
@@ -204,19 +200,25 @@ class ConnectOTF {
 		return $this->getConnection()->table($table);
 	}
 
-
-	// // from -> http://laravel.io/forum/09-13-2014-create-new-database-and-tables-on-the-fly
-	// /**
-	//  * Creates a new database schema.
-	//  *
-	//  * @param  string $schemaName The new schema name.
-	//  * @return bool
-	//  */
-	// function createSchema($schemaName)
-	// {
-	//     // We will use the `statement` method from the connection class so that
-	//     // we have access to parameter binding.
-	//     return DB::getConnection()->statement('CREATE DATABASE :schema', array('schema' => $schemaName));
-	// }
+	/**
+     * Creates new database
+     * 
+     * @throws \Stryve\Exceptions\TenantAlreadyExistsException
+     * @param string $database
+     * @return int
+     */
+    public function createDatabase($database)
+    {
+        try 
+        {
+            return $this->getConnection()->statement(DB::raw('CREATE DATABASE ' . $database));
+        }
+        catch(\Exception $e)
+        {
+            // database probably already exists?
+            /** TODO: LOG ERROR **/
+            throw new TenantAlreadyExistsException;
+        }
+    }
 
 }

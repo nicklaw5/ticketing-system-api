@@ -124,9 +124,7 @@ class Tenant extends Model implements BillableContract
         $request->organisation		= trim($request->organisation);
         $request->subdomain         = lowertrim($request->subdomain);
         $request->database          = replaceHyphens($request->subdomain, '_');
-        $request->database_prefix   = generateRandomString(4, false, true, false);
-
-        // dd($request->database_prefix);
+        $request->database_prefix   = generateRandomString(3).'_';
 
         $request = $this->addUserGeoDataToRequest($request);
         
@@ -174,33 +172,37 @@ class Tenant extends Model implements BillableContract
      * @return array
      */
     // public function setNewTenantDatabaseConnection($request)
-    public function setNewDbConnection($request)
+    public function setNewDbConnection($options)
     {
-    	return new ConnectOTF([
-	    		'database' 	=> $request->database,
-	    		'prefix'	=> $request->database_prefix
-    		]
-    	);
+    	// return new ConnectOTF([
+	    // 		'database' 	=> $request->database,
+	    // 		'prefix'	=> $request->database_prefix
+    	// 	]
+    	// );
 
     	// dd($oft);
     		
         // get the available connections
-        // $connections = Config::get('database.connections');
+        $connections = Config::get('database.connections');
 
-        // // get the default connection options
-        // $defaultConnection = $connections[Config::get('database.default')];
+        // get the default connection options
+        $default = $connections[Config::get('database.default')];
 
-        // // clone the default connection options
-        // $newConnection = $defaultConnection;
+        // clone the default connection options
+        $new = $default;
 
-        // // override the database name to resprsent the new tenant
-        // $newConnection['database'] = $database;
+        foreach($new as $item => $value)
+            $new[$item] = isset($options[$item]) ? $options[$item] : $default[$item];
 
-        // // set the new database connection
-        // Config::set('database.connections.'.$database, $newConnection);
 
-        // // return the new connection options
-        // return $newConnection;
+        // override the database name to resprsent the new tenant
+        $newConnection['database'] = $database;
+
+        // set the new database connection
+        Config::set('database.connections.'.$database, $newConnection);
+
+        // return the new connection options
+        return $newConnection;
     }
 
     /**

@@ -69,8 +69,6 @@ class TenantsController extends Controller
         // sanitize passed params and get geo data
         $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
 
-        // $this->tenant->setNewTenantDatabaseConnection($request);
-
         // check subdomain meets length and regex specifications
         if(! $this->tenant->validateSubdomain($request->subdomain))
             throw new InvalidSubdomainException;
@@ -83,29 +81,116 @@ class TenantsController extends Controller
         if($this->reserved_subdomain->isReserved($request->subdomain))
             throw new TenantAlreadyExistsException;
 
-        //**** MADE IT TO HERE ****//
-        
-        // set the connection to insert the new tenant database
-        // $newConnection = $this->tenant->setNewTenantDatabaseConnection($request);
-        $connection = $this->tenant->setNewDbConnection($request);
+        $options = [
+            'database'  => $request->database,
+            'prefix'    => $request->database_prefix
+        ];
+
+        // set the new connection name
+        $connection_name = $request->database;
+
+        // create the new database connection
+        $conn = new ConnectOTF($options);
+
+        // set the new connection
+        // configureTenantConnection($request->database, $options);
+
+        //
+
+        /***/
+        // // Will contain the array of connections that appear in our database config file.
+        // $connections = \Config::get('database.connections');
+
+        // // This line pulls out the default connection by key (by default it's `mysql`)
+        // $defaultConnection = $connections[\Config::get('database.default')];
+
+        // // Now we simply copy the default connection information to our new connection.
+        // $newConnection = $defaultConnection;
+
+        // $options = [
+        //     'database'  => $request->database,
+        //     'prefix'    => $request->database_prefix
+        // ];
+
+        // // Override the database name.
+        // foreach($newConnection as $item => $value)
+        //     $newConnection[$item] = isset($options[$item]) ? $options[$item] : $newConnection[$item];
+
+        // // dd($newConnection);
+
+        // // $newConnection['database'] = $request->database;
+
+        // // This will add our new connection to the run-time configuration for the duration of the request.
+        // \Config::set('database.connections.'.$request->database, $newConnection);
+        /***/
+
+
+
 
         // count number of table from each database server
         // select database server with the least number of databases
-        // create new database for the new tenant
-        $this->tenant->createNewTenantDatabase($newConnection['database']);
+
+        // // set the default connections options so we can revert back
+        // $conn_name = \Config::get('database.default');
+        // $defaultOptions = \Config::get('database.connections.'.$conn_name);
+
+        // // clone the default options
+        // $default = $defaultOptions;
+
+        // // the new conneciton options
+        // $options = [
+        //     'database'  => $request->database,
+        //     'prefix'    => $request->database_prefix
+        // ];
+
+        // // replace default options
+        // foreach($default as $item => $value)
+        //     $default[$item] = isset($options[$item]) ? $options[$item] : $default[$item];
+
+        // // set the new connection
+        // \Config::set('database.connections.'.$conn_name, $default);
+
+        // try inserting new tenant DB
+        \DB::statement(\DB::raw('CREATE DATABASE ' . $request->database));
+
+        // dd(\Config::get('database.connections.db_svr_0'));
+
+        // $this->tenant->runNewTenantMigration($request->database);
         
+        // run new tenant migration
+        \Artisan::call('migrate', [
+            '--database' => $conn->getConnectionName(),
+            '--path' => 'app/Stryve/Database/Migrations/Tenant'
+        ]);
+
+        // \Config::set('database.connections.'.\Config::get('database.default'), $defaultConnection);
+
+        // dd(\Config::get('database.connections.'.\Config::get('database.default')));
+
+        exit('done');
+        
+        // set the connection to insert the new tenant database
+        // $connection = new ConnectOTF($options); // $this->tenant->setNewDbConnection($request);
+
+        // dd($connection->getDefaultOptions());
+
+        // create new tenant database
+        // $connection->createDatabase($request->database);
+
+        // dd(\Config::get('database.connections.'.$connection->getConnectionName()));
+
+
         // perform initaial database table migration
-        $this->tenant->runNewTenantMigration($newConnection['database']);
         
         // perform initial database seed
 
-
-        // $this->tenant->resetDefaultDatabaseConnection();
+        // reset the connection bac to its default
+        // $connection->getConnection()->resetDefaultConnection();
+        
         
         // add request data to stryve_admin database
         
         // \Artisan::call('migrate:rollback');
-        echo 'done';
 
     }
 
