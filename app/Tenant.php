@@ -52,29 +52,18 @@ class Tenant extends Model implements BillableContract
      */
     protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 
-    // /**
-    //  * @var array
-    //  */
-    // public $newTenantValidation = [
-    //     'full_name' => 'required'
-    //     'company'   => 'required'
-    //     'subdomain' => 'required'
-    //     'phone'     => 'max:16'
-    //     'email'     => 'required|email'
-    // ];
-    
     /**
-     * Creates new tenants database
+     * Create new tenants database
      * 
-     * @param string $database 
-     * @param string $connection 
+     * @throws \Stryve\Exceptions\TenantAlreadyExistsException;
+     * @param string $database
      * @return int
      */
     public function createNewTenantDatabase($database)
     {
         try 
         {
-            return DB::statement(DB::raw('CREATE DATABASE ' . $database));
+            return DB::statement('CREATE DATABASE ' . $database);
         }
         catch(\Exception $e)
         {
@@ -85,18 +74,52 @@ class Tenant extends Model implements BillableContract
     }
 
     /**
-     * Run initial table migration on newly created tenant database.
+     * Run new tenant table migration.
      * 
      * @param string $connection
      * @param string $database
-     * @return void 
+     * @return void
      */
     public function runNewTenantMigration($database)
     {
-        Artisan::call('migrate', [
-            '--database' => $database,
-            '--path' => 'app/Stryve/Database/Migrations/Tenant'
-        ]);
+        try
+        {
+            Artisan::call('migrate', [
+                '--database' => $database,
+                '--path' => 'app/Stryve/Database/Migrations/Tenant'
+            ]);
+        }
+        catch (Exception $e)
+        {
+            /** TODO: LOG ERROR **/
+            throw new FailedTenantMigrationException;
+            
+        }
+    }
+
+    /**
+     * Run new tenant table seeder
+     * 
+     * @param 
+     * @return void
+     */
+    public function runNewTenantTableSeeder($database)
+    {   
+        $class = 'Stryve/Database/Seeds/NewTenantDatabaseSeeder';
+
+        try
+        {
+            Artisan::call('db:seed', [
+                '--class' => $class,
+                '--database' => $database
+            ]);
+        }
+        catch (Exception $e)
+        {
+            /** TODO: LOG ERROR **/
+            throw new FailedTenantMigrationException;
+            
+        }
     }
 
     /**
@@ -165,54 +188,13 @@ class Tenant extends Model implements BillableContract
     }
 
     /**
-     * Sets the database connection for creating a new tenant
-     * database and for running initial table migrations
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    // public function setNewTenantDatabaseConnection($request)
-    public function setNewDbConnection($options)
-    {
-    	// return new ConnectOTF([
-	    // 		'database' 	=> $request->database,
-	    // 		'prefix'	=> $request->database_prefix
-    	// 	]
-    	// );
-
-    	// dd($oft);
-    		
-        // get the available connections
-        $connections = Config::get('database.connections');
-
-        // get the default connection options
-        $default = $connections[Config::get('database.default')];
-
-        // clone the default connection options
-        $new = $default;
-
-        foreach($new as $item => $value)
-            $new[$item] = isset($options[$item]) ? $options[$item] : $default[$item];
-
-
-        // override the database name to resprsent the new tenant
-        $newConnection['database'] = $database;
-
-        // set the new database connection
-        Config::set('database.connections.'.$database, $newConnection);
-
-        // return the new connection options
-        return $newConnection;
-    }
-
-    /**
      * Determines whether or not the provided subdomain
      * meets subdomain length and character requirements.
      * 
      * @param string $subdomain
      * @return bool
      */
-    public function validateSubdomain($subdomain)
+    public function isValidSubdomain($subdomain)
     {
         $subdomain = lowertrim($subdomain);
         $min_length = Config::get('stryve.tenant.subdomain-min-length');
@@ -236,7 +218,7 @@ class Tenant extends Model implements BillableContract
      * @param string $subdomain
      * @return mixed
      */
-    public function findBySudomain($subdomain)
+    public function findBySubdomain($subdomain)
     {
         return $this->where('subdomain', lowertrim($subdomain))->first();
     }

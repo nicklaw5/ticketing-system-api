@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Validator;
 use App\Tenant;
 use App\ReservedSubdomain;
 use App\Http\Requests;
@@ -66,34 +65,73 @@ class TenantsController extends Controller
      */
     public function store(Request $request)
     {
+        // \DB::connection('svr1');
+
+        // \Config::get
+
+        // dd(\DB::connection('svr2'));
+
+
         // sanitize passed params and get geo data
         $request = $this->tenant->sanitizeAndExpandRegistrationRequest($request);
 
+        $subdomain = $request->subdomain;
+        $database = $request->database;
+        $database_prefix = $request->database_prefix;
+
         // check subdomain meets length and regex specifications
-        if(! $this->tenant->validateSubdomain($request->subdomain))
+        if(! $this->tenant->isValidSubdomain($subdomain))
             throw new InvalidSubdomainException;
         
         // check subdomain is not already taken
-        if($this->tenant->findBySudomain($request->subdomain))
+        if($this->tenant->exists($subdomain))
             throw new TenantAlreadyExistsException;
 
         // check subdomain is not reserved
-        if($this->reserved_subdomain->isReserved($request->subdomain))
+        if($this->reserved_subdomain->isReserved($subdomain))
             throw new TenantAlreadyExistsException;
 
+        // set the connection options
         $options = [
-            'database'  => $request->database,
-            'prefix'    => $request->database_prefix
+            'database'  => $database,
+            'prefix'    => $database_prefix
         ];
 
-        // set the new connection name
-        $connection_name = $request->database;
-
-        // create the new database connection
-        $conn = new ConnectOTF($options);
+        // get the default connection detail so we can revert back
+        $defaultConnection = getDefaultDatabaseConnetion();
 
         // set the new connection
-        // configureTenantConnection($request->database, $options);
+        setDatabaseConnetion($database, $options);
+
+        // create the new tenants database
+        $this->tenant->createNewTenantDatabase($database);
+
+        // run the new tenant migration
+        $this->tenant->runNewTenantMigration($database);
+
+        // \DB::disconnect($request->database);
+        // dd(\DB::connection('svr1'));
+
+        // run new tenant seeder
+        $this->tenant->runNewTenantTableSeeder($database);
+
+        // reset the default database connection
+        // setDatabaseConnetion($defaultConnection['connection'], $defaultConnection['options']);
+        
+
+        // $default = \Config::get('database.default');
+        // dd(\Config::get('database.connections.' . $default));
+
+        exit('done');
+
+
+        // \DB::statement(\DB::raw('CREATE DATABASE ' . $request->database));
+
+        // \Artisan::call('migrate', [
+        //     '--database' => $request->database,
+        //     '--path' => 'app/Stryve/Database/Migrations/Tenant'
+        // ]);
+
 
         //
 

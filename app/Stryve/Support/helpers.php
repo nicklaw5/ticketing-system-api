@@ -7,7 +7,7 @@
  * @param array $options
  * @return void
  */
-function configureTenantConnection($connection_name, $options = [])
+function setDatabaseConnetion($connection_name, $options = [])
 {
 	// Will contain the array of connections that appear in our database config file.
     $connections = \Config::get('database.connections');
@@ -25,16 +25,24 @@ function configureTenantConnection($connection_name, $options = [])
 
     // This will add our new connection to the run-time configuration for the duration of the request.
     \Config::set('database.connections.'.$connection_name, $newOptions);
-
-    \DB::statement(\DB::raw('CREATE DATABASE ' . $newOptions['database']));
-
-    \Artisan::call('migrate', [
-        '--database' => $connection_name,
-        '--path' => 'app/Stryve/Database/Migrations/Tenant'
-    ]);
-
-    // dd(\Config::get('database.connections.'.$default));
 }
+
+/**
+ * Reset default database connection
+ * 
+ * @return array
+ */
+function getDefaultDatabaseConnetion()
+{
+	$connection = \Config::get('database.default');
+    $options = \Config::get('database.connections.' . $connection);
+
+ 	return [
+ 		'connection' => $connection,
+ 		'options'	 => $options
+ 	];
+}
+
 
 /**
  * Gets the path to the Stryve folder

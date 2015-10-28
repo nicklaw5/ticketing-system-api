@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION_0', 'db_svr_0'),
+    'default' => env('DB_CONNECTION_1', 'svr1'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,31 +46,12 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
-            'driver'   => 'sqlite',
-            'database' => storage_path('database.sqlite'),
-            'prefix'   => '',
-        ],
-
-        // admin db server
-        'db_svr_0' => [
+        // database server 1
+        'svr1' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST_0', 'localhost'),
-            'database'  => env('DB_DATABASE_0', 'forge'),
-            'username'  => env('DB_USERNAME_0', 'forge'),
-            'password'  => env('DB_PASSWORD_0', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => env('DB_PREFIX_0', ''),
-            'strict'    => false,
-        ],
-
-        // tenant db server 1
-        'db_svr_1' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST_1', 'localhost'),
-            // 'database'  => env('DB_DATABASE_1', 'forge'), // added on the fly, based of tenant name
-            'username'  => env('DB_USERNAME_1', 'forge'),
+            'host'      => env('DB_HOST_1'),
+            'database'  => env('DB_DATABASE_1', ''),
+            'username'  => env('DB_USERNAME_1', ''),
             'password'  => env('DB_PASSWORD_1', ''),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
@@ -78,28 +59,16 @@ return [
             'strict'    => false,
         ],
 
-        // tenant db server 2
-        'db_svr_2' => [
+        // database server 1
+        'svr2' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST_2', 'localhost'),
-            // 'database'  => env('DB_DATABASE_2', 'forge'), // added on the fly, based of tenant name
-            'username'  => env('DB_USERNAME_2', 'forge'),
+            'host'      => env('DB_HOST_2', ''),
+            'database'  => env('DB_DATABASE_2', ''), // added on the fly, based of tenant name
+            'username'  => env('DB_USERNAME_2', ''),
             'password'  => env('DB_PASSWORD_2', ''),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => env('DB_PREFIX_2', ''),
-            'strict'    => false,
-        ],
-
-        'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', 'forge'),
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => env('DB_PREFIX', ''),
             'strict'    => false,
         ],
 
@@ -112,16 +81,6 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
             'schema'   => 'public',
-        ],
-
-        'sqlsrv' => [
-            'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset'  => 'utf8',
-            'prefix'   => '',
         ],
 
     ],

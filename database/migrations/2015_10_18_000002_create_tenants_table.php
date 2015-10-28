@@ -34,7 +34,7 @@ class CreateTenantsTable extends Migration
             $t->softDeletes();
         });
 
-        $db_prefix = Config::get('database.connections.'.env('DB_CONNECTION_0', 'dev_').'.prefix');
+        $db_prefix = Config::get('database.connections.'.env('DB_CONNECTION_1', 'dev_').'.prefix');
 
         // add tenant_uuid column as 16 digit binary
         DB::statement("ALTER TABLE `".$db_prefix."tenants` ADD `uuid` BINARY(16) NOT NULL UNIQUE AFTER `id`");

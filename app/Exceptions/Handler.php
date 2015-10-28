@@ -8,6 +8,7 @@ use Exception;
 use Stryve\Exceptions\InvalidSubdomainException;
 use Stryve\Exceptions\TenantAlreadyExistsException;
 use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
+use Stryve\Exceptions\FailedTenantMigrationException;
 
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
@@ -73,7 +74,9 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof NoDatabaseConnectionFoundExceptoion) 
             return $this->api->respondNotFound($e->getMessage(), $e->getCode());
-            
+
+        if ($e instanceof FailedTenantMigrationException) 
+            return $this->api->respondInternalError($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }
