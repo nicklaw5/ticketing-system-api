@@ -1,48 +1,47 @@
 <?php
 
-/**
- * Sets new database connection
- * 
- * @param string $connection_name
- * @param array $options
- * @return void
- */
-function setDatabaseConnetion($connection_name, $options = [])
-{
-	// Will contain the array of connections that appear in our database config file.
-    $connections = \Config::get('database.connections');
+// /**
+//  * Sets new database connection
+//  * 
+//  * @param string $connection_name
+//  * @param array $options
+//  * @return void
+//  */
+// function setDatabaseConnetion($connection_name, $options = [])
+// {
+// 	// Will contain the array of connections that appear in our database config file.
+//     $connections = \Config::get('database.connections');
 
-    // This line pulls out the default connection by key (by default it's `mysql`)
-    $default = \Config::get('database.default');
-    $defaultOptions = $connections[$default];
+//     // This line pulls out the default connection by key (by default it's `mysql`)
+//     $default = \Config::get('database.default');
+//     $defaultOptions = $connections[$default];
 
-    // Now we simply copy the default connection information to our new connection.
-    $newOptions = $defaultOptions;
+//     // Now we simply copy the default connection information to our new connection.
+//     $newOptions = $defaultOptions;
 
-    // Override the database name.
-    foreach($newOptions as $item => $value)
-        $newOptions[$item] = isset($options[$item]) ? $options[$item] : $newOptions[$item];
+//     // Override the database name.
+//     foreach($newOptions as $item => $value)
+//         $newOptions[$item] = isset($options[$item]) ? $options[$item] : $newOptions[$item];
 
-    // This will add our new connection to the run-time configuration for the duration of the request.
-    \Config::set('database.connections.'.$connection_name, $newOptions);
-}
+//     // This will add our new connection to the run-time configuration for the duration of the request.
+//     \Config::set('database.connections.'.$connection_name, $newOptions);
+// }
 
-/**
- * Reset default database connection
- * 
- * @return array
- */
-function getDefaultDatabaseConnetion()
-{
-	$connection = \Config::get('database.default');
-    $options = \Config::get('database.connections.' . $connection);
+// /**
+//  * Reset default database connection
+//  * 
+//  * @return array
+//  */
+// function getDefaultDatabaseConnetion()
+// {
+// 	$connection = \Config::get('database.default');
+//     $options = \Config::get('database.connections.' . $connection);
 
- 	return [
- 		'connection' => $connection,
- 		'options'	 => $options
- 	];
-}
-
+//  	return [
+//  		'connection' => $connection,
+//  		'options'	 => $options
+//  	];
+// }
 
 /**
  * Gets the path to the Stryve folder
@@ -52,6 +51,16 @@ function getDefaultDatabaseConnetion()
 function stryve_path()
 {
 	return app_path().'/Stryve';
+}
+
+/**
+ * Returns a subdomain
+ * 
+ * @return string 
+ */
+function getSubdomainFromHttpHost()
+{
+	return  array_shift((explode(".", $_SERVER['HTTP_HOST'])));
 }
 
 /**

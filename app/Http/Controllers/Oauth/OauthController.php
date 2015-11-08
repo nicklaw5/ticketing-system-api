@@ -81,7 +81,7 @@ class OauthController extends Controller
 	 *
 	 * @return json
 	 */
-	public function postAccessToken()
+	public function requestAccessToken()
 	{
 		/* REQUEST */
 		// cURL/POST url 	=> http://api.stryve.io:8000/oauth/access_token

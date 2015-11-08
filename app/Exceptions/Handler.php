@@ -4,19 +4,22 @@ namespace App\Exceptions;
 
 use Exception;
 
-// STRYVE EXCEPTIONS
-use Stryve\Exceptions\InvalidSubdomainException;
-use Stryve\Exceptions\TenantAlreadyExistsException;
-use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
-use Stryve\Exceptions\FailedTenantMigrationException;
+// STRYVE HTTP EXCEPTIONS
+use Stryve\Exceptions\Http\HttpNotFoundException;
 
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+// STRYVE APP EXCEPTIONS
+// use Stryve\Exceptions\InvalidSubdomainException;
+// use Stryve\Exceptions\TenantAlreadyExistsException;
+// use Stryve\Exceptions\FailedTenantMigrationException;
+// use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
+
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -27,8 +30,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        HttpException::class,
-        ModelNotFoundException::class,
+        // HttpException::class,
+        // ModelNotFoundException::class,
     ];
 
     /**
@@ -62,21 +65,26 @@ class Handler extends ExceptionHandler
         if ($e instanceof MethodNotAllowedHttpException)
             return $this->api->respondMethodNotAllowed($e->getMessage(), $e->getCode());
 
+        /**************************/
+        /* STRYVE HTTP EXCEPTIONS */
+        /**************************/
+        // if ($e instanceof MethodNotAllowedHttpException)
+                    
 
-        /*********************/
-        /* STRYVE EXCEPTIONS */
-        /*********************/
-        if ($e instanceof InvalidSubdomainException) 
-            return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+        /*************************/
+        /* STRYVE APP EXCEPTIONS */
+        /*************************/
+        // if ($e instanceof InvalidSubdomainException) 
+        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 
-        if ($e instanceof TenantAlreadyExistsException) 
-            return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+        // if ($e instanceof TenantAlreadyExistsException) 
+        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
 
-        if ($e instanceof NoDatabaseConnectionFoundExceptoion) 
-            return $this->api->respondNotFound($e->getMessage(), $e->getCode());
+        // if ($e instanceof NoDatabaseConnectionFoundExceptoion) 
+        //     return $this->api->respondNotFound($e->getMessage(), $e->getCode());
 
-        if ($e instanceof FailedTenantMigrationException) 
-            return $this->api->respondInternalError($e->getMessage(), $e->getCode());
+        // if ($e instanceof FailedTenantMigrationException) 
+        //     return $this->api->respondInternalError($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }

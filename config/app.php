@@ -158,6 +158,9 @@ return [
         // LARAVEL 5 GEOIP
         Torann\GeoIP\GeoIPServiceProvider::class,
 
+        // LARAPI
+        Larapi\LarapiServiceProvider::class,
+
     ],
 
     /*

@@ -4,7 +4,7 @@ namespace Stryve\Exceptions\Http;
 
 use Stryve\Exceptions\StryveException;
 
-class HttpNotFoundExeption extends StryveException
+class HttpNotFoundException extends StryveException
 {
 	/**
      * {@inheritdoc}

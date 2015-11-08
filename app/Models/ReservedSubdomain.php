@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,12 +27,16 @@ class ReservedSubdomain extends Model
      * Updates an existing or creates a new
      * reserved subdomain
      * 
-     * @param type 
+     * @param string $subdomain
      * @return void 
      */
-    public function createOrUpdate($attributes)
+    public function createReservedSubdomain($subdomain)
     {
-    	
+        $domain = new $this;
+
+        $domain->subdomain = $subdomain;
+
+        $domain->save();
     }
 
     /**

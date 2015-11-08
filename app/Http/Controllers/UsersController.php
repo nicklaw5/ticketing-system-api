@@ -1,34 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Subdomain;
-
-class SubdomainController extends Controller
+class UsersController extends Controller
 {
-    /**
-     * @var \App\Subdomain
-     */
-    protected $subdomain;
-
-    /**
-     * Instantiate a new instance
-     */
-    public function __construct($Subdomain $subdomain)
-    {
-        $this->subdomain = $subdomain;
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
         //
     }
@@ -51,6 +47,17 @@ class SubdomainController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
         //
     }

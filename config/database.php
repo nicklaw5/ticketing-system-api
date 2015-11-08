@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION_1', 'svr1'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,28 +47,15 @@ return [
     'connections' => [
 
         // database server 1
-        'svr1' => [
+        'mysql' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST_1'),
-            'database'  => env('DB_DATABASE_1', ''),
-            'username'  => env('DB_USERNAME_1', ''),
-            'password'  => env('DB_PASSWORD_1', ''),
+            'host'      => env('DB_HOST'),
+            'database'  => env('DB_DATABASE', ''),
+            'username'  => env('DB_USERNAME', ''),
+            'password'  => env('DB_PASSWORD', ''),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => env('DB_PREFIX_1', ''),
-            'strict'    => false,
-        ],
-
-        // database server 1
-        'svr2' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST_2', ''),
-            'database'  => env('DB_DATABASE_2', ''), // added on the fly, based of tenant name
-            'username'  => env('DB_USERNAME_2', ''),
-            'password'  => env('DB_PASSWORD_2', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => env('DB_PREFIX_2', ''),
+            'prefix'    => env('DB_PREFIX', ''),
             'strict'    => false,
         ],
 

@@ -1,43 +1,77 @@
 <?php
 
-// Global API - access restriction are based on the passed token (and associated scopes) in the header
-// If request come from a known IP address that is behind the 
-Route::group(['domain' => 'api.stryve.io'], function()
+// api subdomain endpoint for administration
+Route::group(['domain' => 'api.stryve.io',], function()
 {
-	// oauth end-points
-	Route::group(['prefix' => 'oauth', 'namespace' => 'Oauth'], function()
+	Route::group(['prefix' => 'v1'], function()
 	{
-		// Route::get('authorize', ['middleware' => ['check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@getAuthorize']);
-		// Route::post('authorize', ['middleware' => ['csrf', 'check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@postAuthorize']);
-		Route::post('access-token', 'OauthController@postAccessToken');
-	});
+		// OAUTH ROUTES
+		Route::group(['prefix' => 'oauth', 'namespace' => 'Oauth', 'as' => 'oauth::'], function()
+		{	
+			// Route::get('authorize', ['middleware' => ['check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@getAuthorize']);
+			// Route::post('authorize', ['middleware' => ['csrf', 'check-authorization-params'/*, 'auth'*/], 'uses' => 'OauthController@postAuthorize']);
+			Route::post('access-token', ['as' => 'access-token', 'uses' => 'OauthController@requestAccessToken']);
 
-	// tenant end-points
-	Route::group(['prefix' => 'v1/{tenant}', 'namespace' => 'Tenant', 'middleware' => ['oauth', 'api.before', 'api.after' ] ], function()
-	{
-		// Route::resource('auth', 'AuthController');
-		// Route::resource('users', 'UsersController');
-		// Route::resource('billing', 'BillingController');
-		Route::resource('tickets', 'TicketsController');
-		// Route::resource('profile', 'ProfileController');
-		// Route::resource('dashboard', 'DashboardController');
-		// Route::resournce('subscriptions', 'SubscriptionsController');
-		// Route::resource('ticket-attachments', 'TicketAttachmentsController');
-	});
+			// Route::post('refresh-token', 'OauthController@requestRefreshToken');
 
-	// admin end-points
-	Route::group(['prefix' => 'v1/admin', 'namespace' => 'Admin', 'middleware' => ['oauth', 'api.before', 'api.after' ] ], function()
-	{
-		Route::get('/', function()
-		{
-			// echo \LucaDegasperi\OAuth2Server\Facades\Authorizer::getResourceOwnerId();
-			
-			dd(\Uuid::generate()->string);
+			// From Lumen Example
+			// Route::post('access-token', ['as' => 'access-token', 'uses' => 'OauthController@requestAccessToken']);
+	     	// Route::post('refresh-token', ['as' => 'refresh-token', 'uses' => 'OauthController@requestRefreshToken']);
 		});
 
-		Route::resource('staff', 'StaffController');
-		Route::resource('tenants', 'TenantsController');
-		Route::resource('organizations', 'OrganizationsController');
+		// REGISTER ROUTE
+		Route::group(['prefix' => 'accounts', 'as' => 'accounts::', 'middleware' => 'oauth'], function()
+		{
+			Route::post('register', ['as' => 'register', 'uses' => 'AccountsController@store']);
+		});
+
 	});
+});
+
+// SUBSCRIBER API ENDPOINTS
+Route::group(['domain' => '{account}.stryve.io', 'middleware' => 'acc.exists'], function()
+{
+	// AUTHENTICATION ROUTES
+	Route::group(['prefix' => 'auth', 'namespace' => 'Auth', 'as' => 'auth::'], function()
+	{
+		// Route::get('login', ['as' => 'login', 'uses' => 'AuthController@login']);
+		// Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
+		// Route::get('forgot-password', ['as' => 'forgot-password', 'uses' => 'AuthController@getForgotPassword']);
+	});
+
+	
+
+	// API ENDPOINTS
+	Route::group(['prefix' => 'api'], function()
+	{
+		// V1 ENDPOINTS
+		Route::group(['prefix' => 'v1', 'middleware' => ['oauth', 'api.before', 'api.after' ] ], function()
+		{
+			Route::resource('users', 'UsersController');
+			Route::resource('tickets', 'TicketsController');
+			Route::resource('accounts', 'AccountsController');
+		});
+	});
+
+	// // tenant end-points
+	// Route::group(['prefix' => 'v1/{tenant}', 'namespace' => '', 'middleware' => ['oauth', 'api.before', 'api.after' ] ], function()
+	// {
+		
+	// });
+
+	// // admin end-points
+	// Route::group(['prefix' => 'v1/admin', 'namespace' => 'Admin', 'middleware' => ['oauth', 'api.before', 'api.after' ] ], function()
+	// {
+	// 	Route::get('/', function()
+	// 	{
+	// 		// echo \LucaDegasperi\OAuth2Server\Facades\Authorizer::getResourceOwnerId();
+			
+	// 		dd(\Uuid::generate()->string);
+	// 	});
+
+	// 	Route::resource('staff', 'StaffController');
+	// 	Route::resource('tenants', 'TenantsController');
+	// 	Route::resource('organizations', 'OrganizationsController');
+	// });
 
 });

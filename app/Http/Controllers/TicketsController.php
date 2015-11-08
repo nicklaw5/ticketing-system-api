@@ -1,25 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers;
 
-use Route;
-use App\Http\Requests;
 use Illuminate\Http\Request;
-use App\Stryve\ApiResponses;
+
+use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class UsersController extends Controller {
-
+class TicketsController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApiResponses $api)
-    {   
-        return $api->respondOk();
-        // $organization = Route::getCurrentRoute()->getParameter('organization');
-        // return $organization;
+    public function index()
+    {
+        //
     }
 
     /**

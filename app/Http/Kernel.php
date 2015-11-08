@@ -37,7 +37,7 @@ class Kernel extends HttpKernel
         // Stryve Middleware
         'api.before'    =>  \Stryve\Middleware\ApiBeforeMiddleware::class,
         'api.after'     =>  \Stryve\Middleware\ApiAfterMiddleware::class,
-        'tenant'        =>  \Stryve\Middleware\TenantMiddleware::class,
+        'acc.exists'    => \Stryve\Middleware\AccountExistsMiddleware::class,
 
         // Oauth2Server Middleware
         'oauth'                         => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,

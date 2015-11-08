@@ -16,13 +16,8 @@ class CreateReservedSubdomainsTable extends Migration
         {
             $t->increments('id');
             $t->string('subdomain', 40)->unique();            
-            
-            $t->integer('created_by');
-            $t->timestamp('created_at');
-            $t->integer('updated_by');
-            $t->timestamp('updated_at');
-            $t->integer('deleted_by');
-            $t->timestamp('deleted_at');
+            $t->timestamps();
+            $t->softDeletes();
         });
     }
 
