@@ -4,12 +4,12 @@ namespace Stryve\Exceptions;
 
 use Stryve\Exceptions\StryveException;
 
-class FailedTenantMigrationException extends StryveException
+class InvalidEmailAddressException extends StryveException
 {
 	/**
      * {@inheritdoc}
      */
-    public function __construct($msg = 'Failed to run tenant migration.', $code = 5001)
+    public function __construct($msg = 'Invalid email address.', $code = 4003)
     {
         parent::__construct($msg, $code);
     }

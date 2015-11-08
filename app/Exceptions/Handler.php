@@ -2,17 +2,16 @@
 
 namespace App\Exceptions;
 
+use Larapi;
 use Exception;
 
 // STRYVE HTTP EXCEPTIONS
 use Stryve\Exceptions\Http\HttpNotFoundException;
 
 // STRYVE APP EXCEPTIONS
-// use Stryve\Exceptions\InvalidSubdomainException;
-// use Stryve\Exceptions\TenantAlreadyExistsException;
-// use Stryve\Exceptions\FailedTenantMigrationException;
-// use Stryve\Exceptions\NoDatabaseConnectionFoundExceptoion;
-
+use Stryve\Exceptions\App\InvalidSubdomainException;
+use Stryve\Exceptions\App\InvalidEmailAddressException;
+use Stryve\Exceptions\App\AccountAlreadyExistsException;
 
 // LARVEL EXCEPTIONS
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -60,10 +59,10 @@ class Handler extends ExceptionHandler
         /* LARAVEL EXCEPTIONS */
         /**********************/
         if ($e instanceof ModelNotFoundException)
-            return $this->api->respondNotFound($e->getMessage(), $e->getCode());
+            return Larapi::respondNotFound($e->getMessage(), $e->getCode());
 
         if ($e instanceof MethodNotAllowedHttpException)
-            return $this->api->respondMethodNotAllowed($e->getMessage(), $e->getCode());
+            return Larapi::respondMethodNotAllowed($e->getMessage(), $e->getCode());
 
         /**************************/
         /* STRYVE HTTP EXCEPTIONS */
@@ -74,17 +73,14 @@ class Handler extends ExceptionHandler
         /*************************/
         /* STRYVE APP EXCEPTIONS */
         /*************************/
-        // if ($e instanceof InvalidSubdomainException) 
-        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+        if ($e instanceof InvalidSubdomainException) 
+            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
-        // if ($e instanceof TenantAlreadyExistsException) 
-        //     return $this->api->respondBadRequest($e->getMessage(), $e->getCode());
+        if ($e instanceof InvalidSubdomainException) 
+            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
-        // if ($e instanceof NoDatabaseConnectionFoundExceptoion) 
-        //     return $this->api->respondNotFound($e->getMessage(), $e->getCode());
-
-        // if ($e instanceof FailedTenantMigrationException) 
-        //     return $this->api->respondInternalError($e->getMessage(), $e->getCode());
+        if ($e instanceof AccountAlreadyExistsException) 
+            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }
