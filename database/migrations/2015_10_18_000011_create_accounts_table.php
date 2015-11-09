@@ -17,9 +17,7 @@ class CreateAccountsTable extends Migration
             $t->increments('id');
             $t->integer('owner_id')->nullable()->unsigned();
             $t->string('subdomain', 40)->unique();
-            $t->string('url');
-            $t->string('name');
-            $t->boolean('is_sandbox');
+            $t->string('name');            
             $t->string('timezone');
 
             // LARAVE\CASHIER COLUMNS
@@ -36,10 +34,10 @@ class CreateAccountsTable extends Migration
             $t->softDeletes();
 
             // FOREIGN KEYS
-            $t->foreign('owner_id')->references('id')
-                                  ->on('users')
-                                  ->onUpdate('cascade')
-                                  ->onDelete('set null');
+            // $t->foreign('owner_id')->references('id')
+            //                       ->on('users')
+            //                       ->onUpdate('cascade')
+            //                       ->onDelete('set null');
 
         });
 
@@ -55,9 +53,9 @@ class CreateAccountsTable extends Migration
     public function down()
     {
     	// drop foreign keys
-    	Schema::table('accounts', function (Blueprint $t) {
-    		$t->dropForeign('accounts_owner_id_foreign');
-    	});
+    	// Schema::table('accounts', function (Blueprint $t) {
+    	// 	$t->dropForeign('accounts_owner_id_foreign');
+    	// });
 
     	// drop table
         Schema::drop('accounts');

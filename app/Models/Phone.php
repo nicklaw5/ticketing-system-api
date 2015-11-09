@@ -35,7 +35,7 @@ class Phone extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
      * Get the user that owns the phone number.
