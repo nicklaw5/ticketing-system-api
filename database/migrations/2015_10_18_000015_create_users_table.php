@@ -39,6 +39,7 @@ class CreateUsersTable extends Migration
             $t->string('password', 60);
             $t->boolean('active')->default(1);
             $t->boolean('verified')->default(0);
+            $t->boolean('two_factor_authentication')->default(0);
 
             
             $t->integer('account_id')->unsigned()->index();                     // must belong to an account

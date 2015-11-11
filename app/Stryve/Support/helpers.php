@@ -54,6 +54,22 @@ function stryve_path()
 }
 
 /**
+ * Attempts to get the client's locale
+ *
+ * @return mixed
+ */
+function getClientLocale()
+{
+	// can return 'en-GB', 'en-US', etc., or null if undetermined
+	$locale = locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
+	if($locale)
+		return $locale;
+
+	return null;
+}
+
+/**
  * Returns a subdomain
  * 
  * @return string 

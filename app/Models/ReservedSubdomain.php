@@ -17,11 +17,11 @@ class ReservedSubdomain extends Model
     protected $table = 'reserved_subdomains';
 
     /**
-     * The attributes that should be mutated to dates.
-     * 
+     * The dates that should be Carbon mutated
+     *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
      * Updates an existing or creates a new

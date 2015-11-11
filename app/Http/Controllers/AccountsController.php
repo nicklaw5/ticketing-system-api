@@ -59,7 +59,7 @@ class AccountsController extends Controller
         // sanitize passed params and get geo data
         $request = $this->account->sanitizeAndExpandRegistrationRequest($request);
 
-        dd($request);
+        // dd($request);
 
         // Check email address id valid
         if(! isValidEmailAddress($request->email))

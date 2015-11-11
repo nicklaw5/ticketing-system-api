@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "311c9b66e957ca55afb203a4e22b9ac1",
-    "content-hash": "59a17e7c23ed49a9bf52288ada679917",
+    "hash": "2e20037c90a097a1ed3668ffb6ce5c54",
+    "content-hash": "0d77320aca56668c1f726cb309769e7f",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1170,16 +1170,16 @@
         },
         {
             "name": "nicklaw5/larapi",
-            "version": "1.1.1",
+            "version": "1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nicklaw5/Larapi.git",
-                "reference": "cc136fb7be24400be8eb163d0557a0b1de6dc459"
+                "reference": "bdf9edacf84a09913fb6cb2f102f3834b87fdf40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nicklaw5/Larapi/zipball/cc136fb7be24400be8eb163d0557a0b1de6dc459",
-                "reference": "cc136fb7be24400be8eb163d0557a0b1de6dc459",
+                "url": "https://api.github.com/repos/nicklaw5/Larapi/zipball/bdf9edacf84a09913fb6cb2f102f3834b87fdf40",
+                "reference": "bdf9edacf84a09913fb6cb2f102f3834b87fdf40",
                 "shasum": ""
             },
             "require": {
@@ -1203,11 +1203,11 @@
             "description": "A simple Laravel 5 class for handling json api responses.",
             "keywords": [
                 "api",
-                "framework",
                 "json",
-                "laravel"
+                "laravel",
+                "response"
             ],
-            "time": "2015-11-07 00:58:44"
+            "time": "2015-11-10 20:54:43"
         },
         {
             "name": "nikic/php-parser",
@@ -1256,20 +1256,23 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "1.0.10",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "2fa50aa2f17066fa74ba00d943e8cee1a98284af"
+                "reference": "19f765b66c6fbb56ee3b11bc16d52e38eebdc295"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/2fa50aa2f17066fa74ba00d943e8cee1a98284af",
-                "reference": "2fa50aa2f17066fa74ba00d943e8cee1a98284af",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/19f765b66c6fbb56ee3b11bc16d52e38eebdc295",
+                "reference": "19f765b66c6fbb56ee3b11bc16d52e38eebdc295",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
             },
             "suggest": {
                 "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
@@ -1297,7 +1300,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2015-10-23 13:21:37"
+            "time": "2015-11-10 00:45:41"
         },
         {
             "name": "predis/predis",

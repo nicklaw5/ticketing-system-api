@@ -28,9 +28,11 @@ class Organization extends Model
     protected $hidden = [];
 
     /**
+     * The dates that should be Carbon mutated
+     *
      * @var array
      */
-    protected $dates = [];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
      * Tests whether an organisation exists or not

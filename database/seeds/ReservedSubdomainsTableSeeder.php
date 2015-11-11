@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\ReservedSubdomain;
 use Illuminate\Database\Seeder;
+use App\Models\ReservedSubdomain;
 
 /**
  * Insert pre-determined resserved subdomains

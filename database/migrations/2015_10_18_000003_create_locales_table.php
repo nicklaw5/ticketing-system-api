@@ -14,8 +14,7 @@ class CreateLocalesTable extends Migration
     {
         Schema::create('locales', function (Blueprint $t) {
             $t->increments('id');
-            $t->string('locale', 20);   // eg. 'en-US', 'de'
-            $t->string('name');         // eg. 'English', 'Deutsch'
+            $t->string('locale', 30)->index()->nullable();   // eg. 'en-US', 'en-GB', 'de'
             $t->timestamps();
             $t->softDeletes();
         });

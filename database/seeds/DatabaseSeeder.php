@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
+        $this->call(LocalesTableSeeder::class);
+        $this->call(TimezonesTableSeeder::class);
         $this->call(OauthClientsTableSeeder::class);
         $this->call(ReservedSubdomainsTableSeeder::class);
 

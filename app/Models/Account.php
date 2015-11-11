@@ -36,10 +36,11 @@ class Account extends Model
     protected $hidden = [];
 
     /**
+     * The attributes that should be Carbon date mutated
      * @var array
      */
-    protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
-
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'trial_ends_at', 'subscription_ends_at'];
+    
     /**
      * Tests whether an account exists or not
      * 
@@ -89,6 +90,7 @@ class Account extends Model
         $request->subdomain         = lowertrim($request->subdomain);
         $request->database          = replaceHyphens($request->subdomain, '_');
         $request->database_prefix   = generateRandomString(3).'_';
+        $request->locale            = getClientLocale();
 
         $request = $this->addUserGeoDataToRequest($request);
         
