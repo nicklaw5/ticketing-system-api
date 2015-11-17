@@ -10,6 +10,11 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+// STRYVE HTTP EXCEPTIONS
+use Stryve\Exceptions\Http\HttpConflictException;
+use Stryve\Exceptions\Http\HttpBadRequestException;
+use Stryve\Exceptions\Http\HttpUnauthorizedException;
+
 // STRYVE APP EXCEPTIONS
 use Stryve\Exceptions\App\InvalidSubdomainException;
 use Stryve\Exceptions\App\InvalidEmailAddressException;
@@ -59,23 +64,19 @@ class AccountsController extends Controller
         // sanitize passed params and get geo data
         $request = $this->account->sanitizeAndExpandRegistrationRequest($request);
 
-        // dd($request);
+        dd($request);
 
         // Check email address id valid
         if(! isValidEmailAddress($request->email))
-            throw new InvalidEmailAddressException;
+            throw new HttpBadRequestException('Invalid email address.', 4002);
 
         // check subdomain meets length and regex specifications
         if(! $this->account->isValidSubdomain($request->subdomain))
-            throw new InvalidSubdomainException;
+            throw new HttpBadRequestException('Invalid subdomain.', 4003);
         
-        // check subdomain is not already taken
-        if($this->account->exists($request->subdomain))
-            throw new AccountAlreadyExistsException;
-
-        // check subdomain is not reserved
-        if($reserved_subdomain->isReserved($request->subdomain))
-            throw new AccountAlreadyExistsException;
+        // check subdomain is not already taken or reserved
+        if($this->account->exists($request->subdomain) || $reserved_subdomain->isReserved($request->subdomain))
+            throw new HttpConflictException('Account already exists.', 4091);
 
         // begin database transactions
         DB::transaction(function () 
@@ -84,6 +85,11 @@ class AccountsController extends Controller
 
 
             // create new account
+
+            
+            // create account email addresses
+
+
         });
 
         // set the connection options

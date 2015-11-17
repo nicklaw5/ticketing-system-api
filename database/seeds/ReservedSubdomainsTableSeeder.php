@@ -30,14 +30,22 @@ class ReservedSubdomainsTableSeeder extends Seeder
     {
     	$subdomains = json_decode(file_get_contents(stryve_path().'/Database/SeedData/reserved_subdomains.json'));
 
+    	$subdomains_array = [];
+
 		foreach ($subdomains as $subdomain)
 		{
-			// trim and convert to lowercase
 			$subdomain = lowertrim($subdomain);
 
-			// make sure its a valid subdomain
 			if(isValidSubdomain($subdomain))
-	        	$this->reserved_subdomain->createReservedSubdomain($subdomain);
+			{
+				$subdomains_array[] = [
+					'subdomain'		=>	$subdomain,
+					'created_at' 	=> 	\Carbon\Carbon::now(),
+					'updated_at' 	=> 	\Carbon\Carbon::now()
+				];
+			}
 	    }
+
+	    $this->reserved_subdomain->insert($subdomains_array);
     }
 }

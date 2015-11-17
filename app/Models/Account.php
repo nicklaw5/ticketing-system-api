@@ -90,7 +90,7 @@ class Account extends Model
         $request->subdomain         = lowertrim($request->subdomain);
         $request->database          = replaceHyphens($request->subdomain, '_');
         $request->database_prefix   = generateRandomString(3).'_';
-        $request->locale            = getClientLocale();
+        $request->client_locale     = getClientLocale();
 
         $request = $this->addUserGeoDataToRequest($request);
         

@@ -24,7 +24,6 @@ Route::group(['domain' => 'api.stryve.io',], function()
 		{
 			Route::post('register', ['as' => 'register', 'uses' => 'AccountsController@store']);
 		});
-
 	});
 });
 

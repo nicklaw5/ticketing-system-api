@@ -4,12 +4,12 @@ namespace Stryve\Exceptions\Http;
 
 use Stryve\Exceptions\StryveException;
 
-class HttpNotFoundException extends StryveException
+class HttpUnauthorizedException extends StryveException
 {
 	/**
      * {@inheritdoc}
      */
-    public function __construct($msg = 'Not Found', $code = 404)
+    public function __construct($msg = 'Forbidden', $code = 401)
     {
         parent::__construct($msg, $code);
     }

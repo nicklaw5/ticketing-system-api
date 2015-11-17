@@ -43,6 +43,10 @@
 //  	];
 // }
 
+/*******************/
+/* STRYVE SPECIFIC */
+/*******************/
+
 /**
  * Gets the path to the Stryve folder
  * 
@@ -52,6 +56,10 @@ function stryve_path()
 {
 	return app_path().'/Stryve';
 }
+
+/**********/
+/* SERVER */
+/**********/
 
 /**
  * Attempts to get the client's locale
@@ -69,56 +77,9 @@ function getClientLocale()
 	return null;
 }
 
-/**
- * Returns a subdomain
- * 
- * @return string 
- */
-function getSubdomainFromHttpHost()
-{
-	return  array_shift((explode(".", $_SERVER['HTTP_HOST'])));
-}
-
-/**
- * Converts an array to StdClass Object
- * 
- * @param array $array
- * @return StdClass Object
- */
-function arrayToStdClassObject(array $array)
-{
-	return json_decode(json_encode($array));
-}
-
-/**
- * Tests that a given email address is valid
- * 
- * @param string $emailAddress
- * @return bool
- */
-function isValidEmailAddress($emailAddress)
-{
-	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-		return false;
-
-	return true;
-}
-
-/**
- * Converts a string to NULL if empty
- * 
- * @param string
- * @return mixed
- */
-function emptyStringToNull($string)
-{
-	$string = (string) trim($string);
-	
-	if($string === '')
-		return null;
-
-	return $string;
-}
+/**************************/
+/* DOMAINS AND SUBDOMAINS */
+/**************************/
 
 /**
  * Determines whether or not the provided string
@@ -136,6 +97,69 @@ function isValidSubdomain($string)
 		return false;
 
 	return true;
+}
+
+/**
+ * Returns a subdomain
+ * 
+ * @return string 
+ */
+function getSubdomainFromHttpHost()
+{
+	return  array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+}
+
+/**********************/
+/* ARRAYS AND OBJECTS */
+/**********************/
+
+/**
+ * Converts an array to StdClass Object
+ * 
+ * @param array $array
+ * @return StdClass Object
+ */
+function arrayToStdClassObject(array $array)
+{
+	return json_decode(json_encode($array));
+}
+
+/*********/
+/* EMAIL */
+/*********/
+
+/**
+ * Tests that a given email address is valid
+ * 
+ * @param string $emailAddress
+ * @return bool
+ */
+function isValidEmailAddress($emailAddress)
+{
+	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		return false;
+
+	return true;
+}
+
+/***********/
+/* STRINGS */
+/***********/
+
+/**
+ * Converts a string to NULL if empty
+ * 
+ * @param string
+ * @return mixed
+ */
+function emptyStringToNull($string)
+{
+	$string = (string) trim($string);
+	
+	if($string === '')
+		return null;
+
+	return $string;
 }
 
 /**
@@ -181,15 +205,17 @@ function replaceHyphens($string, $replacement)
  * @param int $length
  * @return string
  */
-function generateRandomString($length = 12, $numbers = true, $lowercase = true, $uppercase = true)
+function generateRandomString($length = 12, $numbers = true, $lowercase = true, $uppercase = true, $specials = true)
 {
 	$number_chars   = '0123456789';
 	$lower_chars 	= 'abcdefghijklmnopqrstuvwxyz';
 	$upper_chars 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$special_chars	= '!@#$%&*?';
 	
 	$characters  = ($numbers)? $number_chars : '';
 	$characters .= ($lowercase)? $lower_chars : '';
 	$characters .= ($uppercase)? $upper_chars : '';
+	$characters .= ($specials)? $special_chars : '';
 
 	return substr(str_shuffle($characters), 0, $length);
 }

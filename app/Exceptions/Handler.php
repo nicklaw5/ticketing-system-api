@@ -7,6 +7,9 @@ use Exception;
 
 // STRYVE HTTP EXCEPTIONS
 use Stryve\Exceptions\Http\HttpNotFoundException;
+use Stryve\Exceptions\Http\HttpConflictException;
+use Stryve\Exceptions\Http\HttpBadRequestException;
+use Stryve\Exceptions\Http\HttpUnauthorizedException;
 
 // STRYVE APP EXCEPTIONS
 use Stryve\Exceptions\App\InvalidSubdomainException;
@@ -67,20 +70,26 @@ class Handler extends ExceptionHandler
         /**************************/
         /* STRYVE HTTP EXCEPTIONS */
         /**************************/
-        // if ($e instanceof MethodNotAllowedHttpException)
+        if ($e instanceof HttpBadRequestException)
+            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
                     
+        if ($e instanceof HttpConflictException)
+            return Larapi::respondConflict($e->getMessage(), $e->getCode());
+        
+        if ($e instanceof HttpUnauthorizedException)
+            return Larapi::respondUnauthorized($e->getMessage(), $e->getCode());
+        
+        // /*************************/
+        // /* STRYVE APP EXCEPTIONS */
+        // /*************************/
+        // if ($e instanceof InvalidSubdomainException) 
+        //     return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
-        /*************************/
-        /* STRYVE APP EXCEPTIONS */
-        /*************************/
-        if ($e instanceof InvalidSubdomainException) 
-            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
+        // if ($e instanceof InvalidSubdomainException) 
+        //     return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
-        if ($e instanceof InvalidSubdomainException) 
-            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
-
-        if ($e instanceof AccountAlreadyExistsException) 
-            return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
+        // if ($e instanceof AccountAlreadyExistsException) 
+        //     return Larapi::respondBadRequest($e->getMessage(), $e->getCode());
 
         return parent::render($request, $e);
     }

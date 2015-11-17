@@ -27,11 +27,17 @@ class LocalesTableSeeder extends Seeder
     {
         $locales = json_decode(file_get_contents(stryve_path().'/Database/SeedData/locales.json'));
 
+        $locales_array = [];
+
 		foreach($locales as $value)
 		{
-			$locale 		= new $this->locale;
-			$locale->locale	= $value;
-			$locale->save();	
-		}	
+			$locales_array[] = [
+				'locale' 		=> $value,
+				'created_at' 	=> \Carbon\Carbon::now(),
+				'updated_at' 	=> \Carbon\Carbon::now()
+			];
+		}
+		
+		$this->locale->insert($locales_array);
     }
 }
